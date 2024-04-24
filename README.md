@@ -39,3 +39,7 @@ If you find yourself in a place where the project seems to behave strange or you
 dependencies are broken, you can reset the project environment by running `mise run clean`.
 This will remove the virtual environment but not the `.mise.local.toml`. Afterwards you
 can run `mise run install` to reinstall the project dependencies.
+
+## Topics
+
+- [Conventional Commit Messages](./docs/conventional-commit-messages.md)
