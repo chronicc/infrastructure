@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# mise description="Get the status of the minikube cluster"
+
+minikube --profile="$MINIKUBE_PROFILE" status

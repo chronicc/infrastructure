@@ -2,7 +2,20 @@
 '_'.python.venv.create = true
 '_'.python.venv.path = ".venv"
 
+# The kubernetes version used for the minikube cluster.
+# Also check the kubectl version in the [tools] section when changing this.
+MINIKUBE_KUBERNETES_VERSION="1.30.0"
+
+# The amount of nodes spawned for the minikube cluster.
+MINIKUBE_NODE_COUNT="3"
+
+# The profile name of the minikube cluster.
+MINIKUBE_PROFILE="infrastructure"
+
 [tools]
+k9s = "latest"
+kubectl = "1.30"
+minikube = "1.33.0"
 pulumi = "3.113.3"
 python = "3.12"
 

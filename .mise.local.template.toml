@@ -1,2 +1,6 @@
 [env]
+# The amount of cpus used by the minikube cluster.
+MINIKUBE_CPUS="4"
+
+# The passphrase used by pulumi when initialized with `--secrets-provider=passphrase`.
 PULUMI_CONFIG_PASSPHRASE=""

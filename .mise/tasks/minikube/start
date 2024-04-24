@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# mise description="Start a minikube cluster"
+
+minikube \
+    --addons=ingress,metrics-server \
+    --container-runtime=containerd \
+    --cpus="$MINIKUBE_CPUS" \
+    --kubernetes-version="$MINIKUBE_KUBERNETES_VERSION" \
+    --nodes="$MINIKUBE_NODE_COUNT" \
+    --profile="$MINIKUBE_PROFILE" \
+    start
