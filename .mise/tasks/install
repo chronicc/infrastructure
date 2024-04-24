@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# mise description="Install project dependencies"
+
+mise run pip:install
+
+if [ ! -f .mise.local.toml ] && [ -f .mise.local.template.toml ]
+then
+    cp .mise.local.template.toml .mise.local.toml
+fi

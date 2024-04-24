@@ -1,0 +1,12 @@
+# mise
+.mise.local.toml
+.mise.*.local.toml
+
+# Pulumi
+Pulumi.*.yaml
+
+# Python
+__pycache__
+.venv/
+*.egg-info
+*.pyc
