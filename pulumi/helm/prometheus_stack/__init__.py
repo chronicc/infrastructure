@@ -16,9 +16,13 @@ class PrometheusStack:
     The chart can be configured by setting the following values in the pulumi configuration:
 
     - `helm:prometheusStackAdminPassword`: The admin password for the grafana dashboard.
+    - `helm:prometheusStackAlertmanagerVolumeSize`: The size of the alertmanager volume.
     - `helm:prometheusStackCrdVersion`: The version of the prometheus stack crds.
     - `helm:prometheusStackEnabled`: A boolean value to enable or disable the prometheus stack.
     - `helm:prometheusStackHosts`: The hosts for the grafana ingress, sperated by comma.
+    - `helm:prometheusStackPrometheusVolumeSize`: The size of the prometheus volume.
+    - `helm:prometheusStackStorageClass`: The storage class to use for the prometheus stack.
+    - `helm:prometheusStackUsePersistency`: A boolean value to enable or disable persistency for the prometheus stack.
     - `helm:prometheusStackVersion`: The version of the prometheus stack helm chart.
     - `infrastructure:environment`: The environment in which the chart is running.
     """
@@ -61,6 +65,45 @@ class PrometheusStack:
                     },
                 },
             }
+
+            if helm_config.get_bool("prometheusStackUsePersistency", default=False):
+                chart_values |= {
+                    "alertmanager": {
+                        "alertmanagerSpec": {
+                            "storage": {
+                                "volumeClaimTemplate": {
+                                    "spec": {
+                                        "storageClassName": helm_config.require("prometheusStackStorageClass"),
+                                        "accessModes": ["ReadWriteOnce"],
+                                        "resources": {
+                                            "requests": {
+                                                "storage": helm_config.require("prometheusStackAlertmanagerVolumeSize"),
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    "prometheus": {
+                        "prometheusSpec": {
+                            "storageSpec": {
+                                "volumeClaimTemplate": {
+                                    "spec": {
+                                        "storageClassName": helm_config.require("prometheusStackStorageClass"),
+                                        "accessMode": ["ReadWriteOnce"],
+                                        "resources": {
+                                            "requests": {
+                                                "storage": helm_config.require("prometheusStackPrometheusVolumeSize"),
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                }
+
             chart_version = helm_config.require("prometheusStackVersion")
             self.__crds__(name, crd_version, crd_base_url, crd_files)
             self.__namespace__(name, namespace)
