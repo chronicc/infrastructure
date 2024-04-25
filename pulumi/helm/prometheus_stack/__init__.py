@@ -12,6 +12,7 @@ class PrometheusStack:
     PrometheusStack class creates a prometheus stack using the kube-prometheus-stack helm chart.
 
     :param name: The name of the prometheus stack.
+    :param depends_on: The resources that the prometheus stack depends on.
 
     The chart can be configured by setting the following values in the pulumi configuration:
 
@@ -27,7 +28,7 @@ class PrometheusStack:
     - `infrastructure:environment`: The environment in which the chart is running.
     """
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, depends_on: list = []):
         config = Config()
         helm_config = Config("helm")
 
@@ -160,7 +161,8 @@ class PrometheusStack:
                     self.crds,
                     self.namespace,
                 ]
-            )
+                + depends_on
+            ),
         )
 
 
