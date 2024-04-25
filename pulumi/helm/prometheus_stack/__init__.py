@@ -28,6 +28,7 @@ class PrometheusStack:
     - `infrastructure:environment`: The environment in which the chart is running.
     """
 
+
     def __init__(self, name: str, depends_on: list = []):
         config = Config()
         helm_config = Config("helm")
@@ -59,7 +60,8 @@ class PrometheusStack:
                 },
                 "grafana": {
                     "adminPassword": helm_config.require(
-                        "prometheusStackAdminPassword"),
+                        "prometheusStackAdminPassword"
+                    ),
                     "ingress": {
                         "enabled": True,
                         "hosts": helm_config.require("prometheusStackHosts").split(","),
@@ -126,10 +128,7 @@ class PrometheusStack:
                 with open(file_path, "w") as f:
                     f.write(get(f"{base_url}{file}").text)
 
-        self.crds = ConfigGroup(
-            f"{name}-crds",
-            files=[f"{crd_dir}/*.yaml"]
-        )
+        self.crds = ConfigGroup(f"{name}-crds", files=[f"{crd_dir}/*.yaml"])
 
 
     def __namespace__(self, name: str, namespace: str):
@@ -137,11 +136,18 @@ class PrometheusStack:
             f"{name}-namespace",
             metadata={
                 "name": namespace,
-            }
+            },
         )
 
 
-    def __release__(self, name: str, namespace: str, version: str, values: dict = {}):
+    def __release__(
+        self,
+        name: str,
+        namespace: str,
+        version: str,
+        values: dict = {},
+        depends_on: list = [],
+    ):
         self.release = Release(
             f"{name}-release",
             ReleaseArgs(
