@@ -167,6 +167,13 @@ class PrometheusStack:
 
 
     def __exports__(self):
-        export("prometheusStack/domains", self.release.values["grafana"]["ingress"]["hosts"])
+        export("prometheusStack/appVersion", self.release.status.apply(lambda s: s.app_version))
+        export(
+            "prometheusStack/domains",
+            self.release.values["grafana"]["ingress"]["hosts"],
+        )
         export("prometheusStack/id", self.release.id)
-        export("prometheusStack/status", self.release.status)
+        export("prometheusStack/namespace", self.release.status.apply(lambda s: s.namespace))
+        export("prometheusStack/revision", self.release.status.apply(lambda s: s.revision))
+        export("prometheusStack/status", self.release.status.apply(lambda s: s.status))
+        export("prometheusStack/version", self.release.status.apply(lambda s: s.version))
