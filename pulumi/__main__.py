@@ -1,14 +1,15 @@
 import pulumi
 from helm.prometheus_stack import PrometheusStack
+from kubernetes.default_storage_class import DefaultStorageClass
 
-# --------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 #
 #   Configuration
 #
-# --------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 
-# Minikube does not implement services of type `LoadBalancer`; require the user to specify if we're
-# running on minikube, and if so, create only services of type ClusterIP.
+# Minikube does not implement services of type `LoadBalancer`; require the user to specify
+# if we're running on minikube, and if so, create only services of type ClusterIP.
 config = pulumi.Config()
 k8s_config = pulumi.Config("kubernetes")
 
@@ -17,10 +18,19 @@ pulumi.export("project/environment", config.require("environment"))
 pulumi.export("project/isMinikube", config.require_bool("isMinikube"))
 
 
-# --------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
+#
+#   Kubernetes Cluster
+#
+# ---------------------------------------------------------------------------------------
+
+default_storage_class = DefaultStorageClass("default-storage-class")
+
+
+# ---------------------------------------------------------------------------------------
 #
 #   Helm Charts
 #
-# --------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 
-PrometheusStack("kube-prometheus-stack")
+prometheus_stack = PrometheusStack("kube-prometheus-stack")

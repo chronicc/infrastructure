@@ -12,18 +12,24 @@ class PrometheusStack:
     PrometheusStack class creates a prometheus stack using the kube-prometheus-stack helm chart.
 
     :param name: The name of the prometheus stack.
+    :param depends_on: The resources that the prometheus stack depends on.
 
     The chart can be configured by setting the following values in the pulumi configuration:
 
     - `helm:prometheusStackAdminPassword`: The admin password for the grafana dashboard.
+    - `helm:prometheusStackAlertmanagerVolumeSize`: The size of the alertmanager volume.
     - `helm:prometheusStackCrdVersion`: The version of the prometheus stack crds.
     - `helm:prometheusStackEnabled`: A boolean value to enable or disable the prometheus stack.
     - `helm:prometheusStackHosts`: The hosts for the grafana ingress, sperated by comma.
+    - `helm:prometheusStackPrometheusVolumeSize`: The size of the prometheus volume.
+    - `helm:prometheusStackStorageClass`: The storage class to use for the prometheus stack.
+    - `helm:prometheusStackUsePersistency`: A boolean value to enable or disable persistency for the prometheus stack.
     - `helm:prometheusStackVersion`: The version of the prometheus stack helm chart.
     - `infrastructure:environment`: The environment in which the chart is running.
     """
 
-    def __init__(self, name: str):
+
+    def __init__(self, name: str, depends_on: list = []):
         config = Config()
         helm_config = Config("helm")
 
@@ -54,13 +60,53 @@ class PrometheusStack:
                 },
                 "grafana": {
                     "adminPassword": helm_config.require(
-                        "prometheusStackAdminPassword"),
+                        "prometheusStackAdminPassword"
+                    ),
                     "ingress": {
                         "enabled": True,
                         "hosts": helm_config.require("prometheusStackHosts").split(","),
                     },
                 },
             }
+
+            if helm_config.get_bool("prometheusStackUsePersistency", default=False):
+                chart_values |= {
+                    "alertmanager": {
+                        "alertmanagerSpec": {
+                            "storage": {
+                                "volumeClaimTemplate": {
+                                    "spec": {
+                                        "storageClassName": helm_config.require("prometheusStackStorageClass"),
+                                        "accessModes": ["ReadWriteOnce"],
+                                        "resources": {
+                                            "requests": {
+                                                "storage": helm_config.require("prometheusStackAlertmanagerVolumeSize"),
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    "prometheus": {
+                        "prometheusSpec": {
+                            "storageSpec": {
+                                "volumeClaimTemplate": {
+                                    "spec": {
+                                        "storageClassName": helm_config.require("prometheusStackStorageClass"),
+                                        "accessMode": ["ReadWriteOnce"],
+                                        "resources": {
+                                            "requests": {
+                                                "storage": helm_config.require("prometheusStackPrometheusVolumeSize"),
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                }
+
             chart_version = helm_config.require("prometheusStackVersion")
             self.__crds__(name, crd_version, crd_base_url, crd_files)
             self.__namespace__(name, namespace)
@@ -82,10 +128,7 @@ class PrometheusStack:
                 with open(file_path, "w") as f:
                     f.write(get(f"{base_url}{file}").text)
 
-        self.crds = ConfigGroup(
-            f"{name}-crds",
-            files=[f"{crd_dir}/*.yaml"]
-        )
+        self.crds = ConfigGroup(f"{name}-crds", files=[f"{crd_dir}/*.yaml"])
 
 
     def __namespace__(self, name: str, namespace: str):
@@ -93,11 +136,18 @@ class PrometheusStack:
             f"{name}-namespace",
             metadata={
                 "name": namespace,
-            }
+            },
         )
 
 
-    def __release__(self, name: str, namespace: str, version: str, values: dict = {}):
+    def __release__(
+        self,
+        name: str,
+        namespace: str,
+        version: str,
+        values: dict = {},
+        depends_on: list = [],
+    ):
         self.release = Release(
             f"{name}-release",
             ReleaseArgs(
@@ -117,11 +167,19 @@ class PrometheusStack:
                     self.crds,
                     self.namespace,
                 ]
-            )
+                + depends_on
+            ),
         )
 
 
     def __exports__(self):
-        export("prometheusStack/domains", self.release.values["grafana"]["ingress"]["hosts"])
+        export("prometheusStack/appVersion", self.release.status.apply(lambda s: s.app_version))
+        export(
+            "prometheusStack/domains",
+            self.release.values["grafana"]["ingress"]["hosts"],
+        )
         export("prometheusStack/id", self.release.id)
-        export("prometheusStack/status", self.release.status)
+        export("prometheusStack/namespace", self.release.status.apply(lambda s: s.namespace))
+        export("prometheusStack/revision", self.release.status.apply(lambda s: s.revision))
+        export("prometheusStack/status", self.release.status.apply(lambda s: s.status))
+        export("prometheusStack/version", self.release.status.apply(lambda s: s.version))
