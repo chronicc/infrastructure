@@ -1,6 +1,8 @@
-import pulumi
+from helm.lgtm_stack import LgtmStack
 from helm.prometheus_stack import PrometheusStack
 from kubernetes.default_storage_class import DefaultStorageClass
+import apps
+import pulumi
 
 # ---------------------------------------------------------------------------------------
 #
@@ -16,6 +18,7 @@ k8s_config = pulumi.Config("kubernetes")
 pulumi.export("kubernetes/context", k8s_config.require("context"))
 pulumi.export("project/environment", config.require("environment"))
 pulumi.export("project/isMinikube", config.require_bool("isMinikube"))
+pulumi.export("project/stack", pulumi.get_stack())
 
 
 # ---------------------------------------------------------------------------------------
@@ -26,6 +29,14 @@ pulumi.export("project/isMinikube", config.require_bool("isMinikube"))
 
 default_storage_class = DefaultStorageClass("default-storage-class")
 
+# ---------------------------------------------------------------------------------------
+#
+#   Applications
+#
+# ---------------------------------------------------------------------------------------
+
+s3ninja = apps.S3Ninja("s3ninja")
+
 
 # ---------------------------------------------------------------------------------------
 #
@@ -33,4 +44,5 @@ default_storage_class = DefaultStorageClass("default-storage-class")
 #
 # ---------------------------------------------------------------------------------------
 
-prometheus_stack = PrometheusStack("kube-prometheus-stack")
+# lgtm_stack = LgtmStack(f"{config.require("environment")}-lgtm-stack")
+# prometheus_stack = PrometheusStack("kube-prometheus-stack")
