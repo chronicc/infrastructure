@@ -6,6 +6,7 @@ minikube \
     --container-runtime="containerd" \
     --cpus="$MINIKUBE_CPUS" \
     --kubernetes-version="$MINIKUBE_KUBERNETES_VERSION" \
+    --memory="$MINIKUBE_MEMORY" \
     --nodes="$MINIKUBE_NODE_COUNT" \
     --profile="$MINIKUBE_PROFILE" \
     start
