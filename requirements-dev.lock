@@ -13,6 +13,7 @@ pathspec==0.12.1
 platformdirs==4.2.1
 protobuf==4.25.3
 pulumi==3.114.0
+pulumi_docker==4.5.3
 pulumi_kubernetes==4.11.0
 PyYAML==6.0.1
 requests==2.31.0
