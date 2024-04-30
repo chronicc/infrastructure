@@ -1,4 +1,3 @@
-from helm.lgtm_stack import LgtmStack
 from helm.prometheus_stack import PrometheusStack
 from kubernetes.default_storage_class import DefaultStorageClass
 import apps
@@ -44,5 +43,4 @@ s3ninja = apps.S3Ninja("s3ninja")
 #
 # ---------------------------------------------------------------------------------------
 
-# lgtm_stack = LgtmStack(f"{config.require("environment")}-lgtm-stack")
 # prometheus_stack = PrometheusStack("kube-prometheus-stack")
