@@ -16,7 +16,7 @@ MINIKUBE_PROFILE="infrastructure"
 k9s = "latest"
 kubectl = "1.30"
 minikube = "1.33.0"
-pulumi = "3.114.0"
+pulumi = "3.115.0"
 python = "3.12"
 
 [settings]
