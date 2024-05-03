@@ -12,4 +12,5 @@ config:
   infrastructure:environment: local
   infrastructure:isMinikube: true
   kubernetes:context: infrastructure
+  minioOperator:chartVersion: 5.0.14
   s3ninja:ingressHost: s3ninja.infrastructure.local
