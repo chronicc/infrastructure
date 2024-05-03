@@ -12,3 +12,4 @@ config:
   infrastructure:environment: local
   infrastructure:isMinikube: true
   kubernetes:context: infrastructure
+  s3ninja:ingressHost: s3ninja.infrastructure.local
