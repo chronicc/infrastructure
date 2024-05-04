@@ -2,14 +2,14 @@ from pulumi_kubernetes.core.v1 import Namespace
 from pulumi_kubernetes.helm.v3 import Release, ReleaseArgs, RepositoryOptsArgs
 from pulumi_kubernetes.yaml.v2 import ConfigGroup
 from requests import get
+import components
 import git
 import os
 import pathlib
 import pulumi
-import re
 
 
-class HelmRelease(pulumi.ComponentResource):
+class HelmRelease(components.App):
     """
     Instance Attributes:
         chart_name: (str): The name of the helm chart to deploy.
@@ -62,12 +62,6 @@ class HelmRelease(pulumi.ComponentResource):
         self._crds = self.create_crds(name)
         self._namespace = self.create_namespace(name)
         self._release = self.create_release(name)
-
-    def configure(self, name: str):
-        """This method is run at the start of initializing the class and can be used to
-        configure instance attributes. Use the load_config method to load the configuration
-        for the stack."""
-        pass
 
     def create_crds(self, name: str):
         if len(self.crd_files) > 0:
@@ -130,13 +124,3 @@ class HelmRelease(pulumi.ComponentResource):
         self.export("status", release.status.apply(lambda s: s.status))
         self.export("version", release.status.apply(lambda s: s.version))
         return release
-
-    def export(self, name: str, value: any) -> None:
-        pulumi.export(f"{self.__class__.__name__}/{name}", value)
-
-    def load_config(self, name: str) -> pulumi.Config:
-        """Load the stack configuration. The name is converted to camel case to align
-        with the pulumi stack config standard."""
-        title_case = re.sub(r"(_|-)+", " ", name).title().replace(" ", "")
-        camel_case = "".join([title_case[0].lower() + title_case[1:]])
-        return pulumi.Config(camel_case)
