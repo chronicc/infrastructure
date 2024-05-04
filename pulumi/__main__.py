@@ -36,6 +36,7 @@ default_storage_class = DefaultStorageClass("default-storage-class")
 
 s3ninja = apps.S3Ninja("s3ninja")
 minio_operator = apps.MinioOperator("minio-operator")
+minio_tenant = apps.MinioTenant("minio-tenant-1")
 
 
 # ---------------------------------------------------------------------------------------
