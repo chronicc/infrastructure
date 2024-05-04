@@ -5,7 +5,7 @@ import pulumi
 class S3Ninja(K8sDeployment):
 
     def configure(self, name: str):
-        config = pulumi.Config(name)
+        config = self.load_config(name)
 
         image_version = config.get("imageVersion", "latest")
         ingress_host = config.require("ingressHost")
