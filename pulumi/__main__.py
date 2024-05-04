@@ -14,10 +14,10 @@ import pulumi
 config = pulumi.Config()
 k8s_config = pulumi.Config("kubernetes")
 
-pulumi.export("kubernetes/context", k8s_config.require("context"))
-pulumi.export("project/environment", config.require("environment"))
-pulumi.export("project/isMinikube", config.require_bool("isMinikube"))
-pulumi.export("project/stack", pulumi.get_stack())
+pulumi.export("Kubernetes/context", k8s_config.require("context"))
+pulumi.export("Project/environment", config.require("environment"))
+pulumi.export("Project/isMinikube", config.require_bool("isMinikube"))
+pulumi.export("Project/stack", pulumi.get_stack())
 
 
 # ---------------------------------------------------------------------------------------
@@ -35,6 +35,8 @@ default_storage_class = DefaultStorageClass("default-storage-class")
 # ---------------------------------------------------------------------------------------
 
 s3ninja = apps.S3Ninja("s3ninja")
+minio_operator = apps.MinioOperator("minio-operator")
+minio_tenant = apps.MinioTenant("minio-tenant-1")
 
 
 # ---------------------------------------------------------------------------------------
