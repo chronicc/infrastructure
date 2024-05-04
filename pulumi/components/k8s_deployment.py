@@ -223,4 +223,4 @@ class K8sDeployment(pulumi.ComponentResource):
         pass
 
     def export(self, name: str, value: any) -> None:
-        pulumi.export(f"{self.__class__.__name__.lower()}/{name}", value)
+        pulumi.export(f"{self.__class__.__name__}/{name}", value)

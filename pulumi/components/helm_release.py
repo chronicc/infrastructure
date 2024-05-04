@@ -132,7 +132,7 @@ class HelmRelease(pulumi.ComponentResource):
         return release
 
     def export(self, name: str, value: any) -> None:
-        pulumi.export(f"{self.__class__.__name__.lower()}/{name}", value)
+        pulumi.export(f"{self.__class__.__name__}/{name}", value)
 
     def load_config(self, name: str) -> pulumi.Config:
         """Load the stack configuration. The name is converted to camel case to align
