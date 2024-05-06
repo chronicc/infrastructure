@@ -1,14 +1,14 @@
 encryptionsalt: v1:LyawRTfMO+I=:v1:v10dGptdIvfxYgDw:uwdIXoR7Hy+U4lI2mJKCu+uK2lnZgA==
 config:
-  helm:prometheusStackAdminPassword: password
-  helm:prometheusStackAlertmanagerVolumeSize: 1Gi
-  helm:prometheusStackCrdVersion: v0.73.0
-  helm:prometheusStackEnabled: true
-  helm:prometheusStackHosts: grafana.infrastructure.local
-  helm:prometheusStackPrometheusVolumeSize: 1Gi
-  helm:prometheusStackStorageClass: csi-hostpath-sc
-  helm:prometheusStackUsePersistency: true
-  helm:prometheusStackVersion: 58.2.2
+  prometheusStack:adminPassword: password
+  prometheusStack:alertmanagerVolumeSize: 1Gi
+  prometheusStack:crdVersion: v0.73.0
+  prometheusStack:enabled: true
+  prometheusStack:ingressHost: grafana.infrastructure.local
+  prometheusStack:prometheusVolumeSize: 1Gi
+  prometheusStack:storageClass: csi-hostpath-sc
+  prometheusStack:usePersistency: true
+  prometheusStack:version: 58.2.2
   infrastructure:environment: local
   infrastructure:isMinikube: true
   kubernetes:context: infrastructure
