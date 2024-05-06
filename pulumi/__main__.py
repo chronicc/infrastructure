@@ -1,4 +1,3 @@
-from helm.prometheus_stack import PrometheusStack
 from kubernetes.default_storage_class import DefaultStorageClass
 import apps
 import pulumi
