@@ -39,4 +39,5 @@ minio_tenant = apps.MinioTenant("minio-tenant-1")
 s3ninja = apps.S3Ninja("s3ninja")
 
 # Observability
-prometheus_stack = apps.PrometheusStack("prometheus-stack")
+# loki = apps.Loki("loki", opts=pulumi.ResourceOptions(depends_on=[minio_tenant]))
+# prometheus_stack = apps.PrometheusStack("prometheus-stack")

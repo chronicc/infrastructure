@@ -1,5 +1,17 @@
 encryptionsalt: v1:LyawRTfMO+I=:v1:v10dGptdIvfxYgDw:uwdIXoR7Hy+U4lI2mJKCu+uK2lnZgA==
 config:
+  infrastructure:environment: local
+  infrastructure:isMinikube: true
+  kubernetes:context: infrastructure
+  loki:crdVersion: 0.3.15
+  # loki:s3AccessKeyId: loki
+  # loki:s3Bucket: loki
+  loki:s3Protocol: http
+  # loki:s3SecretAccessKey: loki
+  loki:s3Url: minio-tenant-1-hl.minio-tenant-1.svc.cluster.local:9000
+  loki:version: 3.0.0
+  minioOperator:chartVersion: 5.0.14
+  minioTenant1:chartVersion: 5.0.14
   prometheusStack:adminPassword: password
   prometheusStack:alertmanagerVolumeSize: 1Gi
   prometheusStack:crdVersion: v0.73.0
@@ -9,9 +21,4 @@ config:
   prometheusStack:storageClass: csi-hostpath-sc
   prometheusStack:usePersistency: true
   prometheusStack:version: 58.2.2
-  infrastructure:environment: local
-  infrastructure:isMinikube: true
-  kubernetes:context: infrastructure
-  minioOperator:chartVersion: 5.0.14
-  minioTenant1:chartVersion: 5.0.14
   s3ninja:ingressHost: s3ninja.infrastructure.local

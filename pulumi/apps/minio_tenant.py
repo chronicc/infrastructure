@@ -14,7 +14,7 @@ class MinioTenant(HelmRelease):
             "tenant": {
                 "buckets": [
                     {
-                        "name": config.get("bucketName", "bucket-0"),
+                        "name": config.get("bucketName", "loki"),
                         "objectLock": config.get("bucketObjectLock", False),
                     }
                 ],
@@ -26,6 +26,12 @@ class MinioTenant(HelmRelease):
                         "size": config.get("poolSize", "1Gi"),
                         "volumesPerServer": config.get("poolVolumes", 1),
                     },
+                ],
+                "users": [
+                    {
+                        "CONSOLE_ACCESS_KEY": "loki",
+                        "CONSOLE_SECRET_KEY": "loki",
+                    }
                 ],
             },
         }
