@@ -34,7 +34,10 @@ default_storage_class = DefaultStorageClass("default-storage-class")
 #
 # ---------------------------------------------------------------------------------------
 
-s3ninja = apps.S3Ninja("s3ninja")
+# S3 Provider
 minio_operator = apps.MinioOperator("minio-operator")
 minio_tenant = apps.MinioTenant("minio-tenant-1")
+s3ninja = apps.S3Ninja("s3ninja")
+
+# Observability
 prometheus_stack = apps.PrometheusStack("prometheus-stack")
