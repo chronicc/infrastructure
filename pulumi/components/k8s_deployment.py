@@ -27,10 +27,11 @@ from pulumi_kubernetes.meta.v1 import (
     LabelSelectorArgs,
     ObjectMetaArgs,
 )
+import components
 import pulumi
 
 
-class K8sDeployment(pulumi.ComponentResource):
+class K8sDeployment(components.App):
     """
     Instance Attributes:
         image_name (str): The name of the container image to use.
@@ -216,11 +217,3 @@ class K8sDeployment(pulumi.ComponentResource):
             ),
         )
         return service
-
-    def configure(self, name: str):
-        """This method is run at the start of initializing the class and can be used to
-        configure instance attributes."""
-        pass
-
-    def export(self, name: str, value: any) -> None:
-        pulumi.export(f"{self.__class__.__name__}/{name}", value)
