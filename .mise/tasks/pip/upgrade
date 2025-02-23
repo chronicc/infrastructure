@@ -1,22 +1,13 @@
 #!/usr/bin/env bash
 # mise description="Upgrade python requirements"
 
-get_dependencies() {
-    pip freeze | grep -ve '-e'
-}
+echo ">>> Compiling requirements.txt with updated dependencies"
+pip-compile --upgrade --output-file=requirements.txt requirements.in
 
-for i in $(get_dependencies)
-do
-    package=$(echo $i | cut -d'=' -f1)
-    pip uninstall --yes $package
-done
 
+echo ">>> Upgrading pip"
 pip install --upgrade pip
-pip install --upgrade --requirement=requirements.txt
-get_dependencies > requirements.lock
 
-if [ -f requirements-dev.txt ]
-then
-    pip install --upgrade --requirement=requirements.txt --requirement=requirements-dev.txt
-    get_dependencies > requirements-dev.lock
-fi
+
+echo ">>> Upgrading python requirements"
+pip install --requirement=requirements.txt
