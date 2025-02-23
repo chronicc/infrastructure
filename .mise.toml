@@ -13,5 +13,6 @@ MINIKUBE_NODE_COUNT="3"
 MINIKUBE_PROFILE="infrastructure"
 
 [tools]
+"aqua:lycheeverse/lychee" = "latest"
 minikube = "latest"
 python = "3.13"
