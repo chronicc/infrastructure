@@ -1,8 +1,0 @@
----
-name: infrastructure
-description: chronicc's infrastructure as code
-main: pulumi/
-runtime:
-  name: python
-  options:
-    virtualenv: .venv

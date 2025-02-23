@@ -1,4 +1,0 @@
-gitpython
-pulumi
-pulumi-docker
-pulumi-kubernetes

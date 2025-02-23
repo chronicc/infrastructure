@@ -4,6 +4,3 @@ MINIKUBE_CPUS="4"
 
 # The amount of memory used by the minikube cluster.
 MINIKUBE_MEMORY="8192"
-
-# The passphrase used by pulumi when initialized with `--secrets-provider=passphrase`.
-PULUMI_CONFIG_PASSPHRASE=""

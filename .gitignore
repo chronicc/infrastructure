@@ -1,11 +1,10 @@
-.crds
-
 # mise
 .mise.local.toml
 .mise.*.local.toml
 
 # Python
 __pycache__
+.pytest_cache
 .venv/
 *.egg-info
 *.pyc

@@ -13,11 +13,5 @@ MINIKUBE_NODE_COUNT="3"
 MINIKUBE_PROFILE="infrastructure"
 
 [tools]
-k9s = "latest"
-kubectl = "1.30"
-minikube = "1.33.0"
-pulumi = "3.115.0"
-python = "3.12"
-
-[settings]
-experimental = true
+minikube = "latest"
+python = "3.13"
