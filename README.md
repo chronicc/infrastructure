@@ -4,8 +4,7 @@ Infrastructure
 Intension
 ---------
 
-Have all resources considered as infrastructure contained in one repository and managed
-by one tool.
+Have all resources considered as infrastructure contained in one repository.
 
 Getting started
 ---------------
@@ -32,4 +31,5 @@ can run `mise run install` to reinstall the project dependencies.
 Documentation
 -------------
 
+- [Installation](docs/installation.md)
 - [Conventional Commit Messages](./docs/conventional-commit-messages.md)
