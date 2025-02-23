@@ -14,3 +14,8 @@ repos:
     rev: v0.15.1
     hooks:
       - id: lychee
+  - repo: https://github.com/thoughtworks/talisman
+    rev: 'v1.28.0'
+    hooks:
+      - id: talisman-commit
+        entry: cmd --githook pre-commit
