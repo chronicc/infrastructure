@@ -1,0 +1,136 @@
+---
+services:
+  loki:
+    image: grafana/loki:2.9.2
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki_config:/etc/loki
+      - loki_data:/loki
+    networks:
+      - default
+
+  promtail:
+    image: grafana/promtail:2.9.2
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/log:/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - promtail_config:/etc/promtail
+    networks:
+      - default
+
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+    command: |
+      --config.file=/etc/prometheus/prometheus.yml
+      --storage.tsdb.path=/prometheus
+      --storage.tsdb.retention.time=90d
+      --storage.tsdb.wal-compression
+      --web.console.libraries=/usr/share/prometheus/console_libraries
+      --web.console.templates=/usr/share/prometheus/consoles
+    volumes:
+      - prometheus_config:/etc/prometheus
+      - prometheus_data:/prometheus
+    networks:
+      - default
+
+  grafana:
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clock-panel
+      - GF_PATHS_CONFIG=/etc/grafana/grafana.ini
+      - GF_PATHS_DATA=/var/lib/grafana
+      - GF_PATHS_HOME=/usr/share/grafana
+      - GF_PATHS_LOGS=/var/log/grafana
+      - GF_PATHS_PLUGINS=/var/lib/grafana/plugins
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_SECURITY_ADMIN_PASSWORD}
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        mkdir -p /etc/grafana/provisioning/datasources
+        cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
+        apiVersion: 1
+        datasources:
+        - name: Loki
+          type: loki
+          access: proxy
+          orgId: 1
+          url: http://loki:3100
+          basicAuth: false
+          isDefault: true
+          version: 1
+          editable: false
+        - name: Prometheus
+          type: prometheus
+          access: proxy
+          orgId: 1
+          url: http://prometheus:9090
+          basicAuth: false
+          version: 1
+          editable: false
+        EOF
+        /run.sh
+    image: grafana/grafana-oss:10.2.1
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.grafana.entrypoints=websecure
+        - traefik.http.routers.grafana.rule=Host(`grafana.${APP_DOMAIN}`)
+        - traefik.http.routers.grafana.tls.certresolver=letsencrypt
+        - traefik.http.routers.grafana.tls=true
+        - traefik.http.services.grafana.loadbalancer.healthcheck.path=/api/health
+        - traefik.http.services.grafana.loadbalancer.server.port=3000
+        - traefik.swarm.network=proxy
+    networks:
+      - default
+      - proxy
+    volumes:
+      - grafana_config:/etc/grafana
+      - grafana_data:/var/lib/grafana
+
+networks:
+  default:
+  proxy:
+    external: true
+
+volumes:
+  grafana_config:
+  grafana_data:
+  loki_config:
+  loki_data:
+  prometheus_config:
+  prometheus_data:
+  promtail_config:

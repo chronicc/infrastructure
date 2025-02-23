@@ -1,6 +1,52 @@
 [env]
-# The amount of cpus used by the minikube cluster.
+# Contact email for administration and law enforcement.
+ADMIN_EMAIL=""
+
+# Default domain used by the apps in the cluster.
+APP_DOMAIN=""
+
+# Amount of cpus used by the minikube cluster.
 MINIKUBE_CPUS="4"
 
-# The amount of memory used by the minikube cluster.
-MINIKUBE_MEMORY="8192"
+# Amount of memory used by the minikube cluster.
+MINIKUBE_MEMORY="16384"
+
+# DNS domain used by all swarm services in the cluster.
+SWARM_DOMAIN=""
+
+# Basic auth credentials for the Traefik dashboard.
+TRAEFIK_BASIC_AUTH=""
+
+
+#########################################################################################
+## Swarm Apps
+#########################################################################################
+
+## Grafana
+
+GRAFANA_SECURITY_ADMIN_PASSWORD=""
+
+## Kimai
+
+# Password for the Kimai admin user.
+KIMAI_ADMIN_PASSWORD=""
+
+# Database password used by the Kimai app.
+KIMAI_DB_PASSWORD=""
+
+# Database root password for administration purposes.
+KIMAI_DB_ROOT_PASSWORD=""
+
+# Email address with which the Kimai app sends emails.
+KIMAI_MAILER_FROM=""
+
+## Nextcloud
+
+# Database password used by the Nextcloud app.
+NEXTCLOUD_DB_PASSWORD=""
+
+# Database root password for administration purposes.
+NEXTCLOUD_DB_ROOT_PASSWORD=""
+
+# Redis password used by the Nextcloud app.
+NEXTCLOUD_REDIS_PASSWORD=""

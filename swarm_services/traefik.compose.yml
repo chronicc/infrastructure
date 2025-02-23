@@ -1,0 +1,56 @@
+---
+services:
+  traefik:
+    image: traefik:v3.3
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.proxy==true
+          - node.role==manager
+      replicas: 1
+      labels:
+        - traefik.enable=true
+        - traefik.http.middlewares.redirect-http-to-https.redirectscheme.permanent=true
+        - traefik.http.middlewares.redirect-http-to-https.redirectscheme.scheme=https
+        - traefik.http.middlewares.redirect-non-www-to-www.redirectregex.permanent=true
+        - traefik.http.middlewares.redirect-non-www-to-www.redirectregex.regex="^https?://(?:www\\.)?(.+)"
+        - traefik.http.middlewares.redirect-non-www-to-www.redirectregex.replacement="https://www.$${1}"
+        - traefik.http.middlewares.sts-headers.headers.STSIncludeSubdomains=true
+        - traefik.http.middlewares.sts-headers.headers.STSSeconds=31536000
+        - traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_BASIC_AUTH}
+        - traefik.http.routers.traefik.entrypoints=websecure
+        - traefik.http.routers.traefik.middlewares=traefik-auth
+        - traefik.http.routers.traefik.rule=Host(`proxy.${SWARM_DOMAIN}`)
+        - traefik.http.routers.traefik.service=api@internal
+        - traefik.http.routers.traefik.tls.certresolver=letsencrypt
+        - traefik.http.routers.traefik.tls=true
+        - traefik.http.services.traefik.loadbalancer.server.port=443
+        - traefik.swarm.network=proxy
+    command:
+      --api.dashboard=true
+      --certificatesresolvers.letsencrypt.acme.email=${ADMIN_EMAIL}
+      --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      --entrypoints.web.address=:80
+      --entrypoints.web.http.redirections.entrypoint.scheme=https
+      --entrypoints.web.http.redirections.entrypoint.to=websecure
+      --entrypoints.websecure.address=:443
+      --providers.swarm
+      --providers.swarm.exposedbydefault=false
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - proxy
+    volumes:
+      - letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  proxy:
+    external: true
+
+volumes:
+  letsencrypt:
