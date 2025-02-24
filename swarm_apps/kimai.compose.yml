@@ -54,6 +54,8 @@ services:
       - proxy
 
 networks:
+  default:
+    internal: true
   proxy:
     external: true
 

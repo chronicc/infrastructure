@@ -146,6 +146,7 @@ services:
 
 networks:
   default:
+    internal: true
   prometheus:
     attachable: true
   proxy:
