@@ -24,7 +24,11 @@ TRAEFIK_BASIC_AUTH=""
 
 ## Grafana
 
+# Password for the Grafana admin user.
 GRAFANA_SECURITY_ADMIN_PASSWORD=""
+
+# Basic auth credentials for the Grafana service dashboards.
+GRAFANA_BASIC_AUTH=""
 
 ## Kimai
 
