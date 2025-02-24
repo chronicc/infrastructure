@@ -132,6 +132,18 @@ services:
       - grafana_config:/etc/grafana
       - grafana_data:/var/lib/grafana
 
+  # https://github.com/billimek/prometheus-speedtest-exporter
+  speedtest-exporter:
+    image: billimek/prometheus-speedtest-exporter
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname==terminal-1
+    networks:
+      - default
+
 networks:
   default:
   prometheus:
