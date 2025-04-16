@@ -1,0 +1,181 @@
+---
+
+services:
+  postgresql:
+    image: docker.io/library/postgres:16-alpine
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.proxy==true
+          - node.role==manager
+      replicas: 1
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 5s
+    volumes:
+      - database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${AUTHENTIK_PG_PASS}
+      POSTGRES_USER: authentik
+      POSTGRES_DB: authentik
+    networks:
+      default:
+
+  redis:
+    image: docker.io/library/redis:alpine
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.proxy==true
+          - node.role==manager
+      replicas: 1
+    command: --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      start_period: 20s
+      interval: 30s
+      retries: 5
+      timeout: 3s
+    networks:
+      default:
+    volumes:
+      - redis:/data
+
+  server:
+    image: ghcr.io/goauthentik/server:${AUTHENTIK_TAG}
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.proxy==true
+          - node.role==manager
+      replicas: 1
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.authentik.entrypoints: "websecure"
+        traefik.http.routers.authentik.rule: "Host(`authentik.${SERVICES_DOMAIN}`)"
+        traefik.http.routers.authentik.tls: "true"
+        traefik.http.routers.authentik.tls.certresolver: "letsencrypt"
+        traefik.http.services.authentik.loadbalancer.server.port: "9000"
+        traefik.swarm.network: "proxy"
+    command: server
+    environment:
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_PG_PASS}
+    volumes:
+      - media:/media
+      - templates:/templates
+    networks:
+      default:
+      proxy:
+
+  worker:
+    image: ghcr.io/goauthentik/server:${AUTHENTIK_TAG}
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.proxy==true
+          - node.role==manager
+      replicas: 1
+    command: worker
+    environment:
+      AUTHENTIK_BOOTSTRAP_EMAIL: ${ADMIN_EMAIL}
+      AUTHENTIK_BOOTSTRAP_PASSWORD: ${AUTHENTIK_BOOTSTRAP_PASSWORD}
+      AUTHENTIK_BOOTSTRAP_TOKEN: ${AUTHENTIK_BOOTSTRAP_TOKEN}
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_PG_PASS}
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+    # `user: root` and the docker socket volume are optional.
+    # See more for the docker socket integration here:
+    # https://goauthentik.io/docs/outposts/integrations/docker
+    # Removing `user: root` also prevents the worker from fixing the permissions
+    # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
+    # (1000:1000 by default)
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - media:/media
+      - certs:/certs
+      - templates:/templates
+    networks:
+      default:
+
+  apps-proxy:
+    image: ghcr.io/goauthentik/proxy:${AUTHENTIK_TAG}
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.proxy==true
+          - node.role==manager
+      replicas: 1
+      labels:
+        traefik.enable: "true"
+        traefik.http.middlewares.auth-apps.forwardauth.address: "http://apps-proxy:9000/outpost.goauthentik.io/auth/traefik"
+        traefik.http.middlewares.auth-apps.forwardauth.authResponseHeaders: "X-authentik-username,X-authentik-groups,X-authentik-entitlements,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version"
+        traefik.http.middlewares.auth-apps.forwardauth.trustForwardHeader: "true"
+        traefik.http.routers.auth-apps.entrypoints: "websecure"
+        traefik.http.routers.auth-apps.rule: "Host(`auth.${APPS_DOMAIN}`)"
+        traefik.http.routers.auth-apps.tls: "true"
+        traefik.http.routers.auth-apps.tls.certresolver: "letsencrypt"
+        traefik.http.services.auth-apps.loadbalancer.server.port: "9000"
+        traefik.swarm.network: "proxy"
+    environment:
+      AUTHENTIK_HOST: "https://authentik.${SERVICES_DOMAIN}"
+      AUTHENTIK_INSECURE: "false"
+      AUTHENTIK_TOKEN: "${AUTHENTIK_PROXY_APPS_TOKEN}"
+    networks:
+      proxy:
+
+  svcs-proxy:
+    image: ghcr.io/goauthentik/proxy:${AUTHENTIK_TAG}
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.proxy==true
+          - node.role==manager
+      replicas: 1
+      labels:
+        traefik.enable: "true"
+        traefik.http.middlewares.auth-svcs.forwardauth.address: "http://svcs-proxy:9000/outpost.goauthentik.io/auth/traefik"
+        traefik.http.middlewares.auth-svcs.forwardauth.authResponseHeaders: "X-authentik-username,X-authentik-groups,X-authentik-entitlements,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version"
+        traefik.http.middlewares.auth-svcs.forwardauth.trustForwardHeader: "true"
+        traefik.http.routers.auth-svcs.entrypoints: "websecure"
+        traefik.http.routers.auth-svcs.rule: "Host(`auth.${SERVICES_DOMAIN}`)"
+        traefik.http.routers.auth-svcs.tls: "true"
+        traefik.http.routers.auth-svcs.tls.certresolver: "letsencrypt"
+        traefik.http.services.auth-svcs.loadbalancer.server.port: "9000"
+        traefik.swarm.network: "proxy"
+    environment:
+      AUTHENTIK_HOST: "https://authentik.${SERVICES_DOMAIN}"
+      AUTHENTIK_INSECURE: "false"
+      AUTHENTIK_TOKEN: "${AUTHENTIK_PROXY_SVCS_TOKEN}"
+    networks:
+      proxy:
+
+networks:
+  default:
+    internal: true
+  proxy:
+    external: true
+
+volumes:
+  certs:
+  database:
+  media:
+  redis:
+  templates:
