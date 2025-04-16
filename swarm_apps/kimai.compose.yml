@@ -32,19 +32,19 @@ services:
           - node.labels.proxy!=true
       replicas: 1
       labels:
-        - traefik.enable=true
-        - traefik.http.routers.kimai.entrypoints=websecure
-        - traefik.http.routers.kimai.middlewares=sts-headers
-        - traefik.http.routers.kimai.rule=Host(`kimai.${APP_DOMAIN}`)
-        - traefik.http.routers.kimai.tls.certresolver=letsencrypt
-        - traefik.http.routers.kimai.tls=true
-        - traefik.http.services.kimai.loadbalancer.server.port=8001
-        - traefik.swarm.network=proxy
+        traefik.enable: "true"
+        traefik.http.routers.kimai.entrypoints: "websecure"
+        traefik.http.routers.kimai.middlewares: "sts-headers,auth-apps"
+        traefik.http.routers.kimai.rule: "Host(`kimai.${APPS_DOMAIN}`)"
+        traefik.http.routers.kimai.tls: "true"
+        traefik.http.routers.kimai.tls.certresolver: "letsencrypt"
+        traefik.http.services.kimai.loadbalancer.server.port: "8001"
+        traefik.swarm.network: "proxy"
     environment:
       - ADMINMAIL=${ADMIN_MAIL}
       - ADMINPASS=${KIMAI_ADMIN_PASSWORD}
       - DATABASE_URL=mysql://kimai:${KIMAI_DB_PASSWORD}@db/kimai
-      - TRUSTED_HOSTS=kimai.${APP_DOMAIN},traefik,nginx,localhost,127.0.0.1
+      - TRUSTED_HOSTS=kimai.${APPS_DOMAIN},traefik,nginx,localhost,127.0.0.1
       - MAILER_FROM=${KIMAI_MAILER_FROM}
     volumes:
       - data:/opt/kimai/var/data

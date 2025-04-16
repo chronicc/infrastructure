@@ -2,7 +2,7 @@ fileignoreconfig:
 - filename: swarm_apps/kimai.compose.yml
   checksum: 5400f166c32e37c451aa1d1ed2124306a60e8fcae37e5276bd0034d05aa1b337
 - filename: swarm_apps/nextcloud.compose.yml
-  checksum: 817187190b97a1058f0d3d8851d3c783aae97fc547776855af40cef91c0b8fec
-- filename: swarm_apps/grafana.compose.yml
   checksum: ee2319c603a8632ac7e47f4c3b3307decffcf98579b2bf8f8f0e143385cd93f7
+- filename: swarm_services/authentik.compose.yml
+  checksum: 0aa0ca34f8d8a9ba1ffce75fc00f03475896c8a2fae947a30f3927aa9b792097
 version: ""
