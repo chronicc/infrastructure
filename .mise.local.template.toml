@@ -74,6 +74,22 @@ KIMAI_DB_ROOT_PASSWORD=""
 # Email address with which the Kimai app sends emails.
 KIMAI_MAILER_FROM=""
 
+## Memos
+
+# Container tag of the memos app image.
+MEMOS_CONTAINER_TAG="0.24.2"
+
+# Database password used by the memos app.
+# Use `pwgen 24` to generate a new password.
+MEMOS_DATABASE_PASSWORD=""
+
+# Database root password for the memos database.
+# Use `pwgen 24` to generate a new password.
+MEMOS_DATABASE_ROOT_PASSWORD=""
+
+# Container tag of the mariadb image used by the memos app.
+MEMOS_MARIADB_CONTAINER_TAG="10.5"
+
 ## Nextcloud
 
 # Database password used by the Nextcloud app.
