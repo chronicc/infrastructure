@@ -1,0 +1,65 @@
+---
+services:
+  app:
+    image: "chronicc/journal:${JOURNAL_CONTAINER_TAG}"
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.journal.entrypoints: "websecure"
+        traefik.http.routers.journal.middlewares: "sts-headers,auth-apps"
+        traefik.http.routers.journal.rule: "Host(`journal.${APPS_DOMAIN}`)"
+        traefik.http.routers.journal.tls: "true"
+        traefik.http.routers.journal.tls.certresolver: "letsencrypt"
+        traefik.http.services.journal.loadbalancer.server.port: "3000"
+        traefik.swarm.network: "proxy"
+    environment:
+      RAILS_ENV: "production"
+      SITE_DOMAIN: "journal.${APPS_DOMAIN}"
+      DATABASE_URL: "postgres://journal:${JOURNAL_DATABASE_PASSWORD}@database/journal"
+      CIPHER_KEY: "${JOURNAL_CIPHER_KEY}"
+      SHARING_TOKEN_CIPHER_IV: "${JOURNAL_SHARING_TOKEN_CIPHER_IV}"
+      SECRET_KEY_BASE: "${JOURNAL_SECRET_KEY_BASE}"
+    networks:
+      - default
+      - proxy
+    volumes:
+      - app:/app
+
+  database:
+    image: "postgres:${JOURNAL_DATABASE_CONTAINER_TAG}"
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "journal"]
+    environment:
+      POSTGRES_DB: "journal"
+      POSTGRES_USER: "journal"
+      POSTGRES_PASSWORD: "${JOURNAL_DATABASE_PASSWORD}"
+    networks:
+      - default
+    volumes:
+      - database:/var/lib/postgresql/data
+
+
+networks:
+  defauöt:
+    internal: true
+  proxy:
+    external: true
+
+volumes:
+  app:
+  database:

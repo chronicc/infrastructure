@@ -7,4 +7,6 @@ fileignoreconfig:
   checksum: 0aa0ca34f8d8a9ba1ffce75fc00f03475896c8a2fae947a30f3927aa9b792097
 - filename: swarm_apps/memos.compose.yml
   checksum: 3c36df03863085287fcdc782d6ef708a09aa28578a05ef3d11ba83f795de87de
+- filename: swarm_apps/journal.compose.yml
+  checksum: 7a4fa2d6735497b4cce0f790f621dcc3541aaf30a0375cace7e6b36dd11033af
 version: ""

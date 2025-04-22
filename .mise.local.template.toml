@@ -60,6 +60,31 @@ AUTHENTIK_TAG="2025.2.4"
 # Password for the Grafana admin user.
 GRAFANA_SECURITY_ADMIN_PASSWORD=""
 
+## Journal
+
+# Secret key used for encrypting the journal data.
+# Use `openssl rand -base64 32 | tr -d '\n'` to generate a new key.
+JOURNAL_CIPHER_KEY=""
+
+# Container tag of the journal app image.
+JOURNAL_CONTAINER_TAG="1.0.0"
+
+# Database container tag of the journal app image.
+JOURNAL_DATABASE_CONTAINER_TAG="17.4"
+
+# Database password used by the journal app.
+# Use `pwgen 24` to generate a new password.
+JOURNAL_DATABASE_PASSWORD=""
+
+# Secret key for verifying the integrity of signed cookies.
+# Use `pwgen 32` to generate a new key.
+JOURNAL_SECRET_KEY_BASE=""
+
+# This is to make sure sharing token IVs are the same so we can find posts from a public
+# route parameter.
+# Use `openssl rand -base64 16 | tr -d '\n'` to generate a new IV.
+JOURNAL_SHARING_TOKEN_CIPHER_IV=""
+
 ## Kimai
 
 # Password for the Kimai admin user.
