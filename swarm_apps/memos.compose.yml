@@ -1,0 +1,61 @@
+---
+services:
+  app:
+    image: neosmemo/memos:${MEMOS_CONTAINER_TAG}
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.memos.entrypoints: "websecure"
+        traefik.http.routers.memos.middlewares: "sts-headers,auth-apps"
+        traefik.http.routers.memos.rule: "Host(`memos.${APPS_DOMAIN}`)"
+        traefik.http.routers.memos.tls: "true"
+        traefik.http.routers.memos.tls.certresolver: "letsencrypt"
+        traefik.http.services.memos.loadbalancer.server.port: "5230"
+        traefik.swarm.network: "proxy"
+    environment:
+      MEMOS_DRIVER: "mysql"
+      MEMOS_DSN: "memos:${MEMOS_DATABASE_PASSWORD}@tcp(database)/memos"
+    networks:
+      default:
+      proxy:
+    volumes:
+      - memos:/var/opt/memos
+
+  database:
+    image: mariadb:${MEMOS_MARIADB_CONTAINER_TAG}
+    command:
+      --default-storage-engine innodb
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+    environment:
+      - MYSQL_DATABASE=memos
+      - MYSQL_USER=memos
+      - MYSQL_PASSWORD=${MEMOS_DATABASE_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MEMOS_DATABASE_ROOT_PASSWORD}
+    networks:
+      default:
+    volumes:
+      - database:/var/lib/mysql
+
+networks:
+  default:
+    internal: true
+  proxy:
+    external: true
+
+volumes:
+  database:
+  memos:

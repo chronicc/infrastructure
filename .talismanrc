@@ -5,4 +5,6 @@ fileignoreconfig:
   checksum: ee2319c603a8632ac7e47f4c3b3307decffcf98579b2bf8f8f0e143385cd93f7
 - filename: swarm_services/authentik.compose.yml
   checksum: 0aa0ca34f8d8a9ba1ffce75fc00f03475896c8a2fae947a30f3927aa9b792097
+- filename: swarm_apps/memos.compose.yml
+  checksum: 3c36df03863085287fcdc782d6ef708a09aa28578a05ef3d11ba83f795de87de
 version: ""
