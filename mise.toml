@@ -1,5 +1,4 @@
 [env]
-'_'.python.venv.create = true
 '_'.python.venv.path = ".venv"
 
 # The kubernetes version used for the minikube cluster.
@@ -12,7 +11,11 @@ MINIKUBE_NODE_COUNT="3"
 # The profile name of the minikube cluster.
 MINIKUBE_PROFILE="infrastructure"
 
+[settings]
+experimental = true
+python.uv_venv_auto = true
+
 [tools]
 "aqua:lycheeverse/lychee" = "latest"
 minikube = "latest"
-python = "3.13"
+uv = "latest"

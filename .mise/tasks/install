@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2154
 # mise description="Install project dependencies"
+# mise depends=["python:install"]
 
-mise run pip:install
+cd "$root" || exit 1
 
 if [ ! -f .mise.local.toml ] && [ -f .mise.local.template.toml ]
 then
