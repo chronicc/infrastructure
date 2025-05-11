@@ -3,4 +3,4 @@
 
 rm -rf .pytest_cache
 rm -rf .venv
-find -iname "*.pyc" -delete
+find . -iname "*.pyc" -delete

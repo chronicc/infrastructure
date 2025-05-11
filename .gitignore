@@ -1,6 +1,6 @@
 # mise
-.mise.local.toml
-.mise.*.local.toml
+mise.local.toml
+mise.*.local.toml
 
 # Python
 __pycache__
