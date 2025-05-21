@@ -1,0 +1,29 @@
+---
+services:
+  vault:
+    image: hashicorp/vault:${VAULT_CONTAINER_TAG}
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+      labels:
+        traefik.enable: "false"
+        traefik.swarm.network: "proxy"
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: root
+      VAULT_ADDR: http://
+    networks:
+      default:
+      proxy:
+
+networks:
+  default:
+    internal: true
+  proxy:
+    external: true
