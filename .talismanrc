@@ -11,4 +11,6 @@ fileignoreconfig:
   checksum: 7a4fa2d6735497b4cce0f790f621dcc3541aaf30a0375cace7e6b36dd11033af
 - filename: uv.lock
   checksum: 89c91619df39cc79012c5293591a0776234e828068b2cde46159f8fece9116f1
+- filename: configuration.nix
+  checksum: cf73f8647b2b144f8610f139b425356661a20fe8cf901de944a522361157f8c5
 version: ""

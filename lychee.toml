@@ -1,1 +1,5 @@
-exclude_path = ["swarm_apps", "swarm_services"]
+exclude_path = [
+    "configuration.nix",
+    "swarm_apps",
+    "swarm_services"
+]

@@ -2,6 +2,10 @@
 mise.local.toml
 mise.*.local.toml
 
+# nix
+*.qcow2
+result
+
 # Python
 __pycache__
 .pytest_cache
