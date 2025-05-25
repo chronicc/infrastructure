@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-# mise description="Stop the minikube cluster"
-
-minikube --profile="$MINIKUBE_PROFILE" stop

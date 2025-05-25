@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-# mise description="Get the ip of the minikube cluster"
-
-minikube --profile="$MINIKUBE_PROFILE" ip

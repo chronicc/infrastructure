@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-# mise description="Delete the minikube cluster"
-
-minikube --profile="$MINIKUBE_PROFILE" delete

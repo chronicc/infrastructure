@@ -13,4 +13,6 @@ fileignoreconfig:
   checksum: 89c91619df39cc79012c5293591a0776234e828068b2cde46159f8fece9116f1
 - filename: configuration.nix
   checksum: cf73f8647b2b144f8610f139b425356661a20fe8cf901de944a522361157f8c5
+- filename: .envrc
+  checksum: 5d81e6e2a7f8be17644d0be55ef2892d2cbd8759456a209458bcef47bb7d0f1b
 version: ""
