@@ -12,13 +12,14 @@ pkgs.mkShellNoCC {
     docker-compose
     git
     lychee
+    nix-direnv
     nixfmt-rfc-style
     pre-commit
   ];
 
   shellHook = ''
-    alias infrastructure-vm-build="nix-build '<nixpkgs/nixos>' -A vm -I nixpkgs=channel:nixos-24.05 -I nixos-config=./configuration.nix"
-    alias infrastructure-vm-start="QEMU_KERNEL_PARAMS=console=ttyS0 ./result/bin/run-nixos-vm -nographic; reset"
-    alias reset="rm -f nixos.qcow2"
+    alias project-vm-build="nix-build '<nixpkgs/nixos>' -A vm -I nixpkgs=channel:nixos-24.05 -I nixos-config=./configuration.nix"
+    alias project-vm-start="QEMU_KERNEL_PARAMS=console=ttyS0 ./result/bin/run-nixos-vm -nographic; reset"
+    alias project-vm-reset="rm -f nixos.qcow2"
   '';
 }
