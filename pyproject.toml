@@ -4,9 +4,15 @@ version = "0.1.0"
 description = "IaC for chroni.cc, kurthos.com and kurthos.studio."
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "jmespath>=1.0.1",
+    "paramiko>=3.5.1",
+]
 
 [dependency-groups]
 dev = [
+    "ansible==11.6.0",
+    "ansible-lint>=25.5.0",
     "pre-commit>=4.2.0",
+    "pytest>=8.3.5",
 ]

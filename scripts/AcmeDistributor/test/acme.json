@@ -1,0 +1,28 @@
+{
+  "letsencrypt": {
+    "Account": {
+      "Email": "admin@test.tld",
+      "Registration": {
+        "body": {
+          "status": "valid",
+          "contact": [
+            "mailto:admin@test.tld"
+          ]
+        },
+        "uri": "https://acme-v02.api.letsencrypt.org/acme/acct/1234567890"
+      },
+      "PrivateKey": "PRIVATE_KEY",
+      "KeyType": "4096"
+    },
+    "Certificates": [
+      {
+        "domain": {
+          "main": "service.test.tld"
+        },
+        "certificate": "Q0VSVElGSUNBVEVfRk9SX1NFUlZJQ0VfVEVTVF9UTEQK",
+        "key": "S0VZX0ZPUl9TRVJWSUNFX1RFU1RfVExECg==",
+        "Store": "default"
+      }
+    ]
+  }
+}

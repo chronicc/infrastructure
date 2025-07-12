@@ -1,10 +1,17 @@
+# ansible
+.ansible/
+.cache/
+
 # mise
 mise.local.toml
 mise.*.local.toml
 
 # Python
 __pycache__
-.pytest_cache
+.pytest_cache/
 .venv/
 *.egg-info
 *.pyc
+
+# Visual Studio Code
+.vscode/

@@ -1,0 +1,21 @@
+- name: Extract certificate and key from acme file
+  ansible.builtin.set_fact:
+    - _cert: >-
+        {{
+          acme_file.content
+          | b64decode
+          | community.general.json_query(
+            'Certificates[?domain.main==`{{ item }}`].certificate')
+        }}
+    - _key: >-
+        {{
+          acme_file.content
+          | b64decode
+          | community.general.json_query(acme_key_query)
+        }}
+
+- debug:
+    var: _cert
+
+- debug:
+    var: _key

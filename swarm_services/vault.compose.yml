@@ -1,7 +1,17 @@
 ---
 services:
   vault:
-    image: hashicorp/vault:${VAULT_CONTAINER_TAG}
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_API_ADDR: "http://0.0.0.0:8200"
+      VAULT_STORAGE_FILE_PATH: "/vault/file"
+      VAULT_LISTENER: '{"tcp": {"address": "0.0.0.0.8200", "tls_disable": "true"}}'
+      VAULT_DEFAULT_LEASE_TTL: "168h"
+      VAULT_MAX_LEASE_TTL: "720h"
+      VAULT_UI: "true"
+      VAULT_ADDR: "http://0.0.0.0:8200"
+    image: hashicorp/vault:1.19
     deploy:
       mode: replicated
       placement:
@@ -11,19 +21,25 @@ services:
           - node.labels.proxy!=true
       replicas: 1
       labels:
-        traefik.enable: "false"
+        traefik.enable: "true"
+        traefik.http.routers.vault.entrypoints: "websecure"
+        traefik.http.routers.vault.middlewares: "sts-headers,auth-svcs" # the order is important!!!
+        traefik.http.routers.vault.rule: "Host(`vault.${SERVICES_DOMAIN}`)"
+        traefik.http.routers.vault.tls: "true"
+        traefik.http.routers.vault.tls.certresolver: "letsencrypt"
+        traefik.http.services.vault.loadbalancer.healthcheck.path: "/sys/health"
+        traefik.http.services.vault.loadbalancer.server.port: "8200"
         traefik.swarm.network: "proxy"
-    cap_add:
-      - IPC_LOCK
-    environment:
-      VAULT_DEV_ROOT_TOKEN_ID: root
-      VAULT_ADDR: http://
     networks:
-      default:
       proxy:
+    volumes:
+      - certs:/vault/certs
+      - data:/vault/file
 
 networks:
-  default:
-    internal: true
   proxy:
     external: true
+
+volumes:
+  certs:
+  data:

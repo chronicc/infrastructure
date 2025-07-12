@@ -9,9 +9,19 @@ Have all resources considered as infrastructure contained in one repository.
 Getting started
 ---------------
 
+### Using mise
+
 - Install mise: https://mise.jdx.dev/getting-started.html
 - Inside of the repository root run `mise run install` to install the project dependencies.
 - Fill out the values inside `.mise.local.toml`.
+
+### Manual
+
+- Install the dependencies:
+  - lychee
+  - minikube
+  - pre-commit
+  - uv
 
 ### Introduction to mise-en-place
 

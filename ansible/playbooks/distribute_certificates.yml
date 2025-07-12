@@ -1,0 +1,38 @@
+---
+- name: Distribute Certificates
+  hosts: certificate_servers
+  become: true
+  vars:
+    acme_cert_query: 'Certificates[?domain.main==`{{ item }}`].certificate'
+    acme_key_query: 'Certificates[?domain.main==`{{ item }}`].key'
+  tasks:
+    - name: Ensure tasks run only once
+      block:
+        - name: Read the acme file
+          ansible.builtin.slurp:
+            src: "{{ acme_file_path }}"
+          register: acme_file
+
+        - name: Extract certificate and key from acme file
+          ansible.builtin.set_fact:
+            - "{{ hostvars[inventory_hostname][item + '_cert'] }}": >-
+                {{
+                  acme_file.content
+                  | b64decode
+                  | community.general.json_query(acme_cert_query)
+                }}
+            - "{{ hostvars[inventory_hostname][item + '_key'] }}": >-
+                {{
+                  acme_file.content
+                  | b64decode
+                  | community.general.json_query(acme_key_query)
+                }}
+          with_items: "{{ acme_distribute_services }}"
+
+        - debug:
+            msg: "{{ hostvars[inventory_hostname][item + '_cert'] }}"
+          with_items: "{{ acme_distribute_services }}"
+
+        - debug:
+            msg: "{{ hostvars[inventory_hostname][item + '_key'] }}"
+          with_items: "{{ acme_distribute_services }}"

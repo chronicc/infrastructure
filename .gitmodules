@@ -1,0 +1,3 @@
+[submodule "ansible/inventory"]
+	path = ansible/inventory
+	url = git@github.com:chronicc/ansible-inventory.git

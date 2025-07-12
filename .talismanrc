@@ -1,14 +1,14 @@
 fileignoreconfig:
-- filename: swarm_apps/kimai.compose.yml
-  checksum: 5400f166c32e37c451aa1d1ed2124306a60e8fcae37e5276bd0034d05aa1b337
-- filename: swarm_apps/nextcloud.compose.yml
-  checksum: ee2319c603a8632ac7e47f4c3b3307decffcf98579b2bf8f8f0e143385cd93f7
-- filename: swarm_services/authentik.compose.yml
-  checksum: 0aa0ca34f8d8a9ba1ffce75fc00f03475896c8a2fae947a30f3927aa9b792097
-- filename: swarm_apps/memos.compose.yml
-  checksum: 3c36df03863085287fcdc782d6ef708a09aa28578a05ef3d11ba83f795de87de
-- filename: swarm_apps/journal.compose.yml
-  checksum: 7a4fa2d6735497b4cce0f790f621dcc3541aaf30a0375cace7e6b36dd11033af
+- filename: ansible/inventory
+  checksum: 79f015fd039e4ae014732cf4ef6b54f5b8452f0d93533804e4d37ebf255e7187
 - filename: uv.lock
-  checksum: 89c91619df39cc79012c5293591a0776234e828068b2cde46159f8fece9116f1
+  checksum: 2aac29ac42f9b51a843f6e7e0c3670eee29c3a75be85514e8688b3a4dd5a98bd
+- filename: ansible.cfg
+  checksum: 6bf7dc9e6478d8671054650290655af5fe6cecf73a6c09a2b849eabd72c1d170
+- filename: ansible/playbooks/distribute_certificates.yml
+  checksum: 70c38b2735c91312076de583de9e65eeceebffea0e7f9e66a8f8955d70488cf3
+- filename: scripts/AcmeDistributor/main.py
+  checksum: e11be2a4777a39f4632c84d2e22b2eed072729345b5bbabf6602d5800ae2970d
+- filename: scripts/AcmeDistributor/test/acme.json
+  checksum: f82dda763c238e7952e25ee3135bca9bc3b430184684d94b1eb83c014c1d7714
 version: ""
