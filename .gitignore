@@ -3,8 +3,14 @@ mise.local.toml
 mise.*.local.toml
 
 # Python
-__pycache__
-.pytest_cache
+__pycache__/
+.pytest_cache/
 .venv/
 *.egg-info
 *.pyc
+
+# Ansible
+.ansible/
+
+# Terraform
+.cache/
