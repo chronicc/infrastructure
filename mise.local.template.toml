@@ -9,6 +9,9 @@ APP_DOMAIN=""
 # Default DNS domain used by all apps in the cluster.
 APPS_DOMAIN=""
 
+# DNS domain used by feaby apps in the cluster.
+FEABY_DOMAIN=""
+
 # Amount of cpus used by the minikube cluster.
 MINIKUBE_CPUS="4"
 
@@ -17,6 +20,9 @@ MINIKUBE_MEMORY="16384"
 
 # Default DNS domain used by all services in the cluster.
 SERVICES_DOMAIN=""
+
+# Basic auth credentials for the Traefik dashboard.
+TRAEFIK_BASIC_AUTH=""
 
 
 #########################################################################################
@@ -33,12 +39,18 @@ AUTHENTIK_BOOTSTRAP_PASSWORD=""
 # Use `pwgen 24` to generate a new password.
 AUTHENTIK_BOOTSTRAP_TOKEN=""
 
+# Container image name used for the Authentik app.
+AUTHENTIK_IMAGE="ghcr.io/goauthentik/server"
+
 # Database password used by the Authentik app.
 # Use `pwgen 24` to generate a new password.
 AUTHENTIK_PG_PASS=""
 
 # Token for the authentik apps proxy for registering with the authentik server.
 AUTHENTIK_PROXY_APPS_TOKEN=""
+
+# Token for the feaby apps proxy for registering with the authentik server.
+AUTHENTIK_PROXY_FEABY_APPS_TOKEN=""
 
 # Token for the authentik services proxy for registering with the authentik server.
 AUTHENTIK_PROXY_SVCS_TOKEN=""
@@ -50,15 +62,18 @@ AUTHENTIK_SECRET_KEY=""
 # Container image tag used for the Authentik app.
 AUTHENTIK_TAG="2025.2.4"
 
-
-#########################################################################################
-## Swarm Apps
-#########################################################################################
-
 ## Grafana
 
 # Password for the Grafana admin user.
 GRAFANA_SECURITY_ADMIN_PASSWORD=""
+
+# Basic auth credentials for the Grafana service dashboards.
+GRAFANA_BASIC_AUTH=""
+
+
+#########################################################################################
+## Swarm Apps
+#########################################################################################
 
 ## Journal
 
