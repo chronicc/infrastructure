@@ -167,33 +167,6 @@ services:
     networks:
       proxy:
 
-  feaby-proxy:
-    image: ghcr.io/goauthentik/proxy:${AUTHENTIK_TAG}
-    deploy:
-      mode: replicated
-      placement:
-        constraints:
-          - node.labels.proxy==true
-          - node.role==manager
-      replicas: 1
-      labels:
-        traefik.enable: "true"
-        traefik.http.middlewares.auth-feaby.forwardauth.address: "http://feaby-proxy:9000/outpost.goauthentik.io/auth/traefik"
-        traefik.http.middlewares.auth-feaby.forwardauth.authResponseHeaders: "X-authentik-username,X-authentik-groups,X-authentik-entitlements,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version"
-        traefik.http.middlewares.auth-feaby.forwardauth.trustForwardHeader: "true"
-        traefik.http.routers.auth-feaby.entrypoints: "websecure"
-        traefik.http.routers.auth-feaby.rule: "Host(`auth.${FEABY_DOMAIN}`)"
-        traefik.http.routers.auth-feaby.tls: "true"
-        traefik.http.routers.auth-feaby.tls.certresolver: "letsencrypt"
-        traefik.http.services.auth-feaby.loadbalancer.server.port: "9000"
-        traefik.swarm.network: "proxy"
-    environment:
-      AUTHENTIK_HOST: "https://authentik.${SERVICES_DOMAIN}"
-      AUTHENTIK_INSECURE: "false"
-      AUTHENTIK_TOKEN: "${AUTHENTIK_PROXY_FEABY_APPS_TOKEN}"
-    networks:
-      proxy:
-
 networks:
   default:
     internal: true
