@@ -1,0 +1,38 @@
+---
+services:
+  app:
+    image: triliumnext/trilium
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.trilium.entrypoints: "websecure"
+        traefik.http.routers.trilium.middlewares: "sts-headers,auth-apps"
+        traefik.http.routers.trilium.rule: "Host(`trilium.${APPS_DOMAIN}`)"
+        traefik.http.routers.trilium.tls: "true"
+        traefik.http.routers.trilium.tls.certresolver: "letsencrypt"
+        traefik.http.services.trilium.loadbalancer.server.port: "8080"
+        traefik.swarm.network: "proxy"
+    environment:
+      TRILIUM_DATA_DIR: /home/node/trilium-data
+      TRILIUM_NETWORK_TRUSTEDREVERSEPROXY: 10.0.1.2
+    networks:
+      - default
+      - proxy
+    volumes:
+      - trilium_data:/home/node/trilium-data
+
+networks:
+  default:
+    internal: true
+  proxy:
+    external: true
+
+volumes:
+  trilium_data:
