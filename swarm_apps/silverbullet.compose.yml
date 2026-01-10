@@ -1,7 +1,7 @@
 ---
 services:
   app:
-    image: ghcr.io/silverbulletmd/silverbullet
+    image: ghcr.io/silverbulletmd/silverbullet:2.3.0
     deploy:
       mode: replicated
       placement:
