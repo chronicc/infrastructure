@@ -1,7 +1,7 @@
 ---
 services:
   loki:
-    image: grafana/loki:2.9.2
+    image: grafana/loki:3.5.9
     deploy:
       mode: replicated
       placement:
@@ -18,7 +18,7 @@ services:
       default:
 
   promtail:
-    image: grafana/promtail:2.9.2
+    image: grafana/promtail:3.5.9
     deploy:
       mode: replicated
       placement:
@@ -37,7 +37,7 @@ services:
       default:
 
   prometheus:
-    image: prom/prometheus:v2.48.0
+    image: prom/prometheus:v3.9.1
     deploy:
       mode: replicated
       placement:
@@ -106,7 +106,7 @@ services:
           editable: false
         EOF
         /run.sh
-    image: grafana/grafana-oss:10.2.1
+    image: grafana/grafana-oss:12.3.1
     deploy:
       mode: replicated
       placement:
