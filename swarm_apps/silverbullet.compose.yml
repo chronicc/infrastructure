@@ -1,0 +1,40 @@
+---
+services:
+  app:
+    image: ghcr.io/silverbulletmd/silverbullet
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.silverbullet-noauth.entrypoints: "websecure"
+        traefik.http.routers.silverbullet-noauth.middlewares: "sts-headers"
+        traefik.http.routers.silverbullet-noauth.rule: "Host(`silverbullet.${APPS_DOMAIN}`) && PathPrefix(`/.client/*`) || PathPrefix(`/service_worker.js`)"
+        traefik.http.routers.silverbullet-noauth.tls: "true"
+        traefik.http.routers.silverbullet-noauth.tls.certresolver: "letsencrypt"
+        traefik.http.routers.silverbullet.entrypoints: "websecure"
+        traefik.http.routers.silverbullet.middlewares: "sts-headers,auth-apps"
+        traefik.http.routers.silverbullet.rule: "Host(`silverbullet.${APPS_DOMAIN}`)"
+        traefik.http.routers.silverbullet.tls: "true"
+        traefik.http.routers.silverbullet.tls.certresolver: "letsencrypt"
+        traefik.http.services.silverbullet.loadbalancer.server.port: "3000"
+        traefik.swarm.network: "proxy"
+    networks:
+      - default
+      - proxy
+    volumes:
+      - silverbullet_data:/space
+
+networks:
+  default:
+    internal: true
+  proxy:
+    external: true
+
+volumes:
+  silverbullet_data:
