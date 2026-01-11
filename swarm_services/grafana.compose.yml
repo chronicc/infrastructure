@@ -1,5 +1,34 @@
 ---
 services:
+  alloy:
+    image: grafana/alloy:v1.12.2
+    command: run --server.http.listen-addr=0.0.0.0:8080 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+    deploy:
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.alloy.entrypoints: "websecure"
+        traefik.http.routers.alloy.middlewares: "sts-headers,auth-svcs"
+        traefik.http.routers.alloy.rule: "Host(`alloy.${SERVICES_DOMAIN}`)"
+        traefik.http.routers.alloy.tls: "true"
+        traefik.http.routers.alloy.tls.certresolver: "letsencrypt"
+        traefik.http.services.alloy.loadbalancer.server.port: "8080"
+        traefik.swarm.network: "proxy"
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+    volumes:
+      - alloy_config:/etc/alloy
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/log:/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      default:
+      proxy:
+
   loki:
     image: grafana/loki:3.5.9
     deploy:
@@ -14,25 +43,6 @@ services:
     volumes:
       - loki_config:/etc/loki
       - loki_data:/loki
-    networks:
-      default:
-
-  promtail:
-    image: grafana/promtail:3.5.9
-    deploy:
-      mode: replicated
-      placement:
-        constraints:
-          - node.hostname==rs1
-          - node.labels.environment==production
-          - node.labels.proxy!=true
-      replicas: 1
-    command: -config.file=/etc/promtail/config.yml
-    volumes:
-      - /var/lib/docker:/var/lib/docker:ro
-      - /var/log:/var/log:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - promtail_config:/etc/promtail
     networks:
       default:
 
@@ -139,6 +149,7 @@ networks:
     external: true
 
 volumes:
+  alloy_config:
   grafana_config:
   grafana_data:
   loki_config:
