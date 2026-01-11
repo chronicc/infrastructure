@@ -11,4 +11,6 @@ fileignoreconfig:
   checksum: 7a4fa2d6735497b4cce0f790f621dcc3541aaf30a0375cace7e6b36dd11033af
 - filename: uv.lock
   checksum: 89c91619df39cc79012c5293591a0776234e828068b2cde46159f8fece9116f1
+- filename: swarm_apps/teamspeak.compose.yml
+  checksum: 1322180dd5c8011829d3f4b79a203632df7cdd4c432a30e6a03906601924186e
 version: ""

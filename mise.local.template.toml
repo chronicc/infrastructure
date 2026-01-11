@@ -140,3 +140,11 @@ NEXTCLOUD_DB_ROOT_PASSWORD=""
 
 # Redis password used by the Nextcloud app.
 NEXTCLOUD_REDIS_PASSWORD=""
+
+## Teamspeak
+
+# Database password used by the Teamspeak app.
+TEAMSPEAK_DB_PASSWORD=""
+
+# Database root password for administration purposes.
+TEAMSPEAK_DB_ROOT_PASSWORD=""

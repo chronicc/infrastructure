@@ -35,6 +35,10 @@ services:
       --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
       --certificatesresolvers.letsencrypt.acme.httpchallenge=true
       --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      --entrypoints.ts-dns.address=:41144/tcp
+      --entrypoints.ts-filetransfer.address=:30033/tcp
+      --entrypoints.ts-raw.address=:10011/tcp
+      --entrypoints.ts-voice.address=:9987/udp
       --entrypoints.web.address=:80
       --entrypoints.web.http.redirections.entrypoint.scheme=https
       --entrypoints.web.http.redirections.entrypoint.to=websecure
@@ -43,12 +47,28 @@ services:
       --providers.swarm
       --providers.swarm.exposedbydefault=false
     ports:
-      - target: 80
+      - mode: host
         published: 80
-        mode: host
-      - target: 443
+        target: 80
+      - mode: host
         published: 443
-        mode: host
+        target: 443
+      - mode: host
+        protocol: udp
+        published: 9987
+        target: 9987
+      - mode: host
+        protocol: tcp
+        published: 10011
+        target: 10011
+      - mode: host
+        protocol: tcp
+        published: 30033
+        target: 30033
+      - mode: host
+        protocol: tcp
+        published: 41144
+        target: 41144
     networks:
       proxy:
     volumes:

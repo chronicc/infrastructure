@@ -1,0 +1,86 @@
+---
+services:
+  app:
+    image: teamspeak:3.13
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+      labels:
+        traefik.enable: "true"
+        # traefik.http.routers.teamspeak.entrypoints: "websecure"
+        # traefik.http.routers.teamspeak.rule: "Host(`ts.${APP_DOMAIN}`)"
+        # traefik.http.routers.teamspeak.service: "teamspeak"
+        # traefik.http.routers.teamspeak.tls: "true"
+        # traefik.http.routers.teamspeak.tls.certresolver: "letsencrypt"
+        # traefik.http.services.teamspeak.loadbalancer.server.port: "10443"
+        traefik.swarm.network: "proxy"
+        traefik.tcp.routers.ts-dns.entrypoints: "ts-dns"
+        traefik.tcp.routers.ts-dns.rule: "HostSNI(`ts.${APP_DOMAIN}`)"
+        traefik.tcp.routers.ts-dns.service: "ts-dns"
+        traefik.tcp.routers.ts-dns.tls: "true"
+        traefik.tcp.routers.ts-dns.tls.certresolver: "letsencrypt"
+        traefik.tcp.routers.ts-filetransfer.entrypoints: "ts-filetransfer"
+        traefik.tcp.routers.ts-filetransfer.rule: "HostSNI(`ts.${APP_DOMAIN}`)"
+        traefik.tcp.routers.ts-filetransfer.service: "ts-filetransfer"
+        traefik.tcp.routers.ts-filetransfer.tls: "true"
+        traefik.tcp.routers.ts-filetransfer.tls.certresolver: "letsencrypt"
+        traefik.tcp.routers.ts-raw.entrypoints: "ts-raw"
+        traefik.tcp.routers.ts-raw.rule: "HostSNI(`ts.${APP_DOMAIN}`)"
+        traefik.tcp.routers.ts-raw.service: "ts-raw"
+        traefik.tcp.routers.ts-raw.tls: "true"
+        traefik.tcp.routers.ts-raw.tls.certresolver: "letsencrypt"
+        traefik.tcp.services.ts-dns.loadbalancer.server.port: "41144"
+        traefik.tcp.services.ts-filetransfer.loadbalancer.server.port: "30033"
+        traefik.tcp.services.ts-raw.loadbalancer.server.port: "10011"
+        traefik.udp.routers.ts-voice.entrypoints: "ts-voice"
+        traefik.udp.routers.ts-voice.service: "ts-voice"
+        traefik.udp.services.ts-voice.loadbalancer.server.port: "9987"
+    environment:
+      TS3SERVER_DB_PLUGIN: ts3db_mariadb
+      TS3SERVER_DB_SQLCREATEPATH: create_mariadb
+      TS3SERVER_DB_HOST: db
+      TS3SERVER_DB_USER: teamspeak
+      TS3SERVER_DB_PASSWORD: ${TEAMSPEAK_DB_PASSWORD}
+      TS3SERVER_DB_NAME: teamspeak
+      TS3SERVER_DB_WAITUNTILREADY: 30
+      TS3SERVER_LICENSE: accept
+    volumes:
+      - app_data:/var/ts3server/
+    networks:
+      - default
+      - proxy
+
+  db:
+    image: mariadb:12
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+    environment:
+      MYSQL_ROOT_PASSWORD: ${TEAMSPEAK_DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: teamspeak
+      MYSQL_USER: teamspeak
+      MYSQL_PASSWORD: ${TEAMSPEAK_DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - default
+
+networks:
+  default:
+    internal: true
+  proxy:
+    external: true
+
+volumes:
+  app_data:
+  db_data:
