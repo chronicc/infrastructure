@@ -38,6 +38,7 @@ services:
       --entrypoints.ts-dns.address=:41144/tcp
       --entrypoints.ts-filetransfer.address=:30033/tcp
       --entrypoints.ts-raw.address=:10011/tcp
+      --entrypoints.ts-ssh.address=:10022/tcp
       --entrypoints.ts-voice.address=:9987/udp
       --entrypoints.web.address=:80
       --entrypoints.web.http.redirections.entrypoint.scheme=https
@@ -61,6 +62,10 @@ services:
         protocol: tcp
         published: 10011
         target: 10011
+      - mode: host
+        protocol: tcp
+        published: 10022
+        target: 10022
       - mode: host
         protocol: tcp
         published: 30033
