@@ -1,7 +1,7 @@
 ---
 services:
   db:
-    image: mariadb:10
+    image: mariadb:11.7
     deploy:
       mode: replicated
       placement:
@@ -39,7 +39,7 @@ services:
       - default
 
   app:
-    image: nextcloud:27
+    image: nextcloud:32
     deploy:
       mode: replicated
       placement:
@@ -54,7 +54,7 @@ services:
         - traefik.http.middlewares.nextcloud-dav.replacepathregex.replacement=https://$$1/remote.php/dav/
         - traefik.http.routers.nextcloud.entrypoints=websecure
         - traefik.http.routers.nextcloud.middlewares=nextcloud-dav,sts-headers
-        - traefik.http.routers.nextcloud.rule=Host(`cloud.${APP_DOMAIN}`)
+        - traefik.http.routers.nextcloud.rule=Host(`cloud.${APP_DOMAIN}`) && !Path(`/cron.php`)
         - traefik.http.routers.nextcloud.tls.certresolver=letsencrypt
         - traefik.http.routers.nextcloud.tls=true
         - traefik.http.services.nextcloud.loadbalancer.server.port=80
