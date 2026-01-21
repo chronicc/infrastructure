@@ -81,6 +81,30 @@ services:
     networks:
       - default
 
+  # adminer:
+  #   image: adminer:latest
+  #   deploy:
+  #     mode: replicated
+  #     placement:
+  #       constraints:
+  #         - node.hostname==rs1
+  #         - node.labels.environment==production
+  #         - node.labels.proxy!=true
+  #     replicas: 1
+  #     labels:
+  #       traefik.enable: "true"
+  #       traefik.http.routers.adminer.entrypoints: "websecure"
+  #       traefik.http.routers.adminer.middlewares: "sts-headers,auth-apps"
+  #       traefik.http.routers.adminer.rule: "Host(`adminer.${APPS_DOMAIN}`)"
+  #       traefik.http.routers.adminer.service: "adminer"
+  #       traefik.http.routers.adminer.tls: "true"
+  #       traefik.http.routers.adminer.tls.certresolver: "letsencrypt"
+  #       traefik.http.services.adminer.loadbalancer.server.port: "8080"
+  #       traefik.swarm.network: "proxy"
+  #   networks:
+  #     - default
+  #     - proxy
+
 networks:
   default:
     internal: true
