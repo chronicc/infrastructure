@@ -137,6 +137,7 @@ services:
       AUTHENTIK_HOST: "https://authentik.${SERVICES_DOMAIN}"
       AUTHENTIK_INSECURE: "false"
       AUTHENTIK_TOKEN: "${AUTHENTIK_PROXY_APPS_TOKEN}"
+    hostname: apps-proxy
     networks:
       proxy:
 
@@ -164,6 +165,7 @@ services:
       AUTHENTIK_HOST: "https://authentik.${SERVICES_DOMAIN}"
       AUTHENTIK_INSECURE: "false"
       AUTHENTIK_TOKEN: "${AUTHENTIK_PROXY_SVCS_TOKEN}"
+    hostname: svcs-proxy
     networks:
       proxy:
 
