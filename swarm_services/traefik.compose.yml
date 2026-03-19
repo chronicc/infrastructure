@@ -35,6 +35,8 @@ services:
       --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
       --certificatesresolvers.letsencrypt.acme.httpchallenge=true
       --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      --entrypoints.mumble-tcp.address=:64738/tcp
+      --entrypoints.mumble-udp.address=:64738/udp
       --entrypoints.ts-dns.address=:41144/tcp
       --entrypoints.ts-filetransfer.address=:30033/tcp
       --entrypoints.ts-raw.address=:10011/tcp
@@ -75,6 +77,14 @@ services:
         protocol: tcp
         published: 41144
         target: 41144
+      - mode: host
+        protocol: tcp
+        published: 64738
+        target: 64738
+      - mode: host
+        protocol: udp
+        published: 64738
+        target: 64738
     networks:
       proxy:
     volumes:

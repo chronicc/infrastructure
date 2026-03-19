@@ -1,0 +1,69 @@
+---
+# TODO: Fix ssl handshake error for tcp connection.
+#       The stack deployment basically works but fails to forward the tcp connection to the app.
+services:
+  app:
+    image: mumblevoip/mumble-server:latest
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+      labels:
+        traefik.enable: "true"
+        traefik.swarm.network: "proxy"
+        traefik.tcp.routers.mumble.entrypoints: "mumble-tcp"
+        traefik.tcp.routers.mumble.rule: "HostSNI(`voice.${APPS_DOMAIN}`)"
+        traefik.tcp.routers.mumble.service: "mumble"
+        traefik.tcp.routers.mumble.tls: "true"
+        traefik.tcp.routers.mumble.tls.certresolver: "letsencrypt"
+        traefik.tcp.services.mumble.loadbalancer.server.port: "64738"
+        traefik.udp.routers.mumble.entrypoints: "mumble-udp"
+        traefik.udp.routers.mumble.service: "mumble"
+        traefik.udp.services.mumble.loadbalancer.server.port: "64738"
+    environment:
+      MUMBLE_CONFIG_DATABASE: mumble
+      MUMBLE_CONFIG_DBDRIVER: QMYSQL
+      MUMBLE_CONFIG_DBHOST: db
+      MUMBLE_CONFIG_DBPASSWORD: ${MUMBLE_DB_PASSWORD}
+      MUMBLE_CONFIG_DBUSERNAME: mumble
+      MUMBLE_CONFIG_USERS: 16
+      MUMBLE_SUPERUSER_PASSWORD: ${MUMBLE_SUPERUSER_PASSWORD}
+    volumes:
+      - app_data:/data
+    networks:
+      - default
+      - proxy
+
+  db:
+    image: mariadb:12
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.hostname==rs1
+          - node.labels.environment==production
+          - node.labels.proxy!=true
+      replicas: 1
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MUMBLE_DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: mumble
+      MYSQL_USER: mumble
+      MYSQL_PASSWORD: ${MUMBLE_DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - default
+
+networks:
+  default:
+    internal: true
+  proxy:
+    external: true
+
+volumes:
+  app_data:
+  db_data:

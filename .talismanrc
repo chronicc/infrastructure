@@ -13,4 +13,6 @@ fileignoreconfig:
   checksum: 89c91619df39cc79012c5293591a0776234e828068b2cde46159f8fece9116f1
 - filename: swarm_apps/teamspeak.compose.yml
   checksum: 1322180dd5c8011829d3f4b79a203632df7cdd4c432a30e6a03906601924186e
+- filename: swarm_apps/mumble.compose.yml
+  checksum: 5463be3b562c79525fd092f625814c135ecaa2b6911cc693642f2dc3e9dd19cb
 version: ""

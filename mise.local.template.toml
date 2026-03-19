@@ -130,6 +130,19 @@ MEMOS_DATABASE_ROOT_PASSWORD=""
 # Container tag of the mariadb image used by the memos app.
 MEMOS_MARIADB_CONTAINER_TAG="10.5"
 
+## Mumble
+
+# Superuser password for the Mumble app.
+MUMBLE_SUPERUSER_PASSWORD=""
+
+# Database password used by the Mumble app.
+# Use `pwgen 32` to generate a new password.
+MUMBLE_DB_PASSWORD=""
+
+# Database root password for administration purposes.
+# Use `pwgen 32` to generate a new password.
+MUMBLE_DB_ROOT_PASSWORD=""
+
 ## Nextcloud
 
 # Database password used by the Nextcloud app.
