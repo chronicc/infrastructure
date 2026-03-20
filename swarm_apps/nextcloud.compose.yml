@@ -6,9 +6,9 @@ services:
       mode: replicated
       placement:
         constraints:
-          - node.hostname==rs1
           - node.labels.environment==production
           - node.labels.proxy!=true
+          - node.labels.sphere==public
       replicas: 1
     command:
       --transaction-isolation=READ-COMMITTED
@@ -30,9 +30,9 @@ services:
       mode: replicated
       placement:
         constraints:
-          - node.hostname==rs1
           - node.labels.environment==production
           - node.labels.proxy!=true
+          - node.labels.sphere==public
       replicas: 1
     command: redis-server --requirepass "${NEXTCLOUD_REDIS_PASSWORD}"
     networks:
@@ -44,9 +44,9 @@ services:
       mode: replicated
       placement:
         constraints:
-          - node.hostname==rs1
           - node.labels.environment==production
           - node.labels.proxy!=true
+          - node.labels.sphere==public
       replicas: 1
       labels:
         - traefik.enable=true
