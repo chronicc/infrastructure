@@ -1,0 +1,11 @@
+---
+docker_daemon_options:
+  data-root: /var/lib/docker
+  metrics-addr: 172.17.0.1:9090
+  default-address-pools:
+    - base: 172.17.0.0/16
+      size: 24
+
+packages:
+  - { name: python3-jmespath, src: apt, state: present }
+  - { name: python3-jsondiff, src: apt, state: present }

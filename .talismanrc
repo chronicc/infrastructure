@@ -1,4 +1,12 @@
 fileignoreconfig:
+- filename: ansible/inventory/group_vars/app_donetick.yml
+  checksum: 97399a360461b4bd3388bcb904df93f2a6c629deea7364e5297c1a13781fe195
+- filename: ansible/play_install_swarm_app.yml
+  checksum: 24f2609162540f60bd89c25a859e1f1696e8e7d14fb4994abf3df27e1f9ca6ec
+- filename: ansible/templates/donetick.config.yml.j2
+  checksum: a1601f7e08e05a971553d6dbb82a263d9a02054e1267ecbf8d5e71df2b463bde
+- filename: ansible/templates/donetick.compose.yml.j2
+  checksum: 4be3a53c35fb7b37602bb7cfadcefec0e620d240f2ffa735039c863017f7aee5
 - filename: swarm_apps/kimai.compose.yml
   checksum: 5400f166c32e37c451aa1d1ed2124306a60e8fcae37e5276bd0034d05aa1b337
 - filename: swarm_apps/nextcloud.compose.yml
@@ -10,7 +18,7 @@ fileignoreconfig:
 - filename: swarm_apps/journal.compose.yml
   checksum: 7a4fa2d6735497b4cce0f790f621dcc3541aaf30a0375cace7e6b36dd11033af
 - filename: uv.lock
-  checksum: 89c91619df39cc79012c5293591a0776234e828068b2cde46159f8fece9116f1
+  checksum: 8a2e391897ca59f4cabd7ef067071b2e1abd33dbcc09c7c184d521067c20579b
 - filename: swarm_apps/teamspeak.compose.yml
   checksum: 1322180dd5c8011829d3f4b79a203632df7cdd4c432a30e6a03906601924186e
 version: ""

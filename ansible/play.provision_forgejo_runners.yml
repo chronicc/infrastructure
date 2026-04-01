@@ -1,0 +1,91 @@
+---
+- name: Provision Forgejo Runners
+  hosts: forgejo_runners
+  become: true
+  tasks:
+    - name: Create ansible cache directory
+      ansible.builtin.file:
+        path: "{{ ansible_cache_directory }}"
+        state: directory
+        recurse: true
+        mode: "0755"
+
+    - name: Download the Forgejo runner binary
+      ansible.builtin.get_url:
+        url: "{{ forgejo_runner_url }}"
+        dest: "{{ ansible_cache_directory }}/forgejo-runner-{{ forgejo_runner_version }}"
+
+    - name: Install the Forgejo runner binary
+      ansible.builtin.copy:
+        src: "{{ ansible_cache_directory }}/forgejo-runner-{{ forgejo_runner_version }}"
+        dest: /usr/local/bin/forgejo-runner
+        mode: "0755"
+        remote_src: true
+
+    - name: Create Forgejo runner user
+      ansible.builtin.user:
+        name: "{{ item.key }}"
+        create_home: true
+      loop: "{{ forgejo_runner_connections | dict2items }}"
+
+    - name: Add forgejo-runner user to additional groups
+      ansible.builtin.user:
+        name: "{{ item.key }}"
+        groups: "{{ forgejo_runner_additional_groups | join(',') }}"
+        append: true
+      loop: "{{ forgejo_runner_connections | dict2items }}"
+      when:
+        - forgejo_runner_additional_groups is defined
+        - forgejo_runner_additional_groups | length > 0
+
+    - name: Create Forgejo runner configuration
+      ansible.builtin.template:
+        src: forgejo-config.yml.j2
+        dest: /home/{{ item.key }}/runner-config.yml
+        mode: "0644"
+      register: forgejo_config_result
+      loop: "{{ forgejo_runner_connections | dict2items }}"
+
+    - name: Create Forgejo runner service
+      ansible.builtin.template:
+        src: forgejo-runner.service.j2
+        dest: /etc/systemd/system/forgejo-runner-{{ item.key }}.service
+        mode: "0644"
+      register: forgejo_service_result
+      loop: "{{ forgejo_runner_connections | dict2items }}"
+
+    - name: Reload systemd daemon
+      ansible.builtin.systemd:
+        daemon_reload: true
+      when: forgejo_service_result.changed
+
+    - name: Register the Forgejo runner
+      ansible.builtin.command:
+        cmd: >
+          forgejo-runner register
+          --config /home/{{ item.key }}/runner-config.yml
+          --instance {{ item.value.url }}
+          --token {{ item.value.token }}
+          --name {{ hostvars[ansible_hostname].ansible_facts.fqdn }}
+          --no-interactive
+        chdir: /home/{{ item.key }}
+        creates: /home/{{ item.key }}/.runner
+      loop: "{{ forgejo_runner_connections | dict2items }}"
+      become: true
+      become_user: "{{ item.key }}"
+      register: forgejo_register_result
+
+    - name: Enable Forgejo runner service
+      ansible.builtin.systemd:
+        name: forgejo-runner-{{ item.key }}
+        enabled: true
+      loop: "{{ forgejo_runner_connections | dict2items }}"
+
+    - name: Restart Forgejo runner service
+      ansible.builtin.systemd:
+        name: forgejo-runner-{{ item.key }}
+        state: restarted
+      loop: "{{ forgejo_runner_connections | dict2items }}"
+      when: forgejo_config_result.changed
+            or forgejo_service_result.changed
+            or forgejo_register_result.changed

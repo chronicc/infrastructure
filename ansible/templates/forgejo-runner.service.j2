@@ -1,0 +1,17 @@
+[Unit]
+Description=Forgejo Runner
+Documentation=https://forgejo.org/docs/latest/admin/actions/
+After=docker.service
+
+[Service]
+ExecStart=/usr/local/bin/forgejo-runner daemon --config /home/{{ item.key }}/runner-config.yml
+ExecReload=/bin/kill -s HUP $MAINPID
+
+User={{ item.key }}
+WorkingDirectory=/home/{{ item.key }}
+Restart=on-failure
+TimeoutSec=0
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

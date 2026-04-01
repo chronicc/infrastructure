@@ -70,10 +70,30 @@ GRAFANA_SECURITY_ADMIN_PASSWORD=""
 # Basic auth credentials for the Grafana service dashboards.
 GRAFANA_BASIC_AUTH=""
 
+#-----( Ansible )---------------------------------------------------------------------------------
+
+# Forgejo Runner token for registering a runner.
+FORGEJO_CODEBERG_GENERAL_TOKEN=""
+FORGEJO_CODEBERG_ALTOSTEITI_TOKEN=""
+
 
 #########################################################################################
 ## Swarm Apps
 #########################################################################################
+
+## Donetick
+
+# Secret key used for signing JWT tokens in Donetick.
+# Use `pwgen 64` to generate a new key.
+DONETICK_JWT_SECRET=""
+
+# Database root password used by the Donetick app.
+# Use `pwgen 24` to generate a new password.
+DONETICK_DB_ROOT_PASSWORD=""
+
+# Database password used by the Donetick app.
+# Use `pwgen 24` to generate a new password.
+DONETICK_DB_PASSWORD=""
 
 ## Journal
 

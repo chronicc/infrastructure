@@ -3,10 +3,15 @@ name = "infrastructure"
 version = "0.1.0"
 description = "IaC for chroni.cc, kurthos.com and kurthos.studio."
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = []
+requires-python = ">=3.12"
+dependencies = [
+    "ansible-core>=2.20.3",
+    "ansible-lint>=26.3.0",
+    "jmespath>=1.1.0",
+]
 
 [dependency-groups]
 dev = [
+    "ara>=1.7.5",
     "pre-commit>=4.2.0",
 ]

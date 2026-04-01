@@ -18,5 +18,4 @@ python.uv_venv_auto = true
 [tools]
 "aqua:lycheeverse/lychee" = "latest"
 minikube = "latest"
-python = "3.13"
 uv = "latest"

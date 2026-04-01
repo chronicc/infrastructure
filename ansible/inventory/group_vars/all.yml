@@ -1,0 +1,9 @@
+---
+ansible_cache_directory: /var/cache/ansible
+ansible_python_interpreter: /usr/bin/python3
+ansible_ssh_args: -C -o ControlMaster=auto -o ControlPersist=60s
+ansible_ssh_pipelining: true
+
+package_architectures:
+  x86_64: amd64
+  aarch64: arm64

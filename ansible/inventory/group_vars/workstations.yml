@@ -1,0 +1,4 @@
+---
+packages:
+  - { name: imagemagick, src: apt, state: present }
+  - { name: vim, src: apt, state: present }
