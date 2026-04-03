@@ -14,6 +14,7 @@ forgejo_runner_connections:
     token: "{{ lookup('env', 'FORGEJO_CODEBERG_ALTOSTEITI_TOKEN') }}"
     url: https://codeberg.org/
     labels:
+      - altosteiti
       - docker
       - internet
       - kurthos
