@@ -7,3 +7,26 @@ ansible_ssh_pipelining: true
 package_architectures:
   x86_64: amd64
   aarch64: arm64
+
+packages_all:
+  - { name: bash-completion, src: apt, state: present }
+  - { name: curl, src: apt, state: present }
+  - { name: git, src: apt, state: present }
+  - { name: htop, src: apt, state: present }
+  - { name: vim, src: apt, state: present }
+
+packages: >-
+  {%- set _packages = [] -%}
+  {%-
+    set _package_vars_to_merge = lookup('ansible.builtin.varnames', '^packages_.*$')
+    | ansible.builtin.split(',')
+    | ansible.builtin.sort
+  -%}
+  {%- for _package_var in _package_vars_to_merge -%}
+    {{ _packages.append(lookup('ansible.builtin.vars', _package_var)) }}
+  {%- endfor -%}
+  {{
+    _packages
+    | ansible.builtin.flatten
+    | ansible.builtin.unique
+  }}

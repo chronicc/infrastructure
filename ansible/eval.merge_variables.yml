@@ -1,0 +1,7 @@
+- name: Evaluate variable merging
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Show merged packages variable
+      ansible.builtin.debug:
+        var: packages

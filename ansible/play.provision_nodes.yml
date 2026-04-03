@@ -2,14 +2,14 @@
 - name: Run node provisioning tasks
   hosts: all
 
-  roles:
-    - role: geerlingguy.docker
-      when: inventory_hostname in groups['container_nodes']
-
-  tasks:
+  pre_tasks:
     - name: Ensure apt packages are installed/removed
       ansible.builtin.apt:
         name: "{{ item.name }}"
         state: "{{ item.state }}"
       loop: "{{ packages }}"
       when: item.src == 'apt'
+
+  roles:
+    - role: geerlingguy.docker
+      when: inventory_hostname in groups['container_nodes']

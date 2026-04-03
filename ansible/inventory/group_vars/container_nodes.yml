@@ -6,6 +6,6 @@ docker_daemon_options:
     - base: 172.17.0.0/16
       size: 24
 
-packages:
+packages_container_nodes:
   - { name: python3-jmespath, src: apt, state: present }
   - { name: python3-jsondiff, src: apt, state: present }
