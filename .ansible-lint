@@ -1,0 +1,22 @@
+exclude_paths:
+  - swarm_apps/
+  - swarm_services/
+
+kinds:
+  - meta: "**/meta/main.yml"
+  - tasks: "**/handlers/*.yml"
+  - tasks: "**/tasks/*.yml"
+  - vars: "**/defaults/*.yml"
+  - vars: "**/molecule/**/vars.yml"
+  - vars: "**/vars/*.yml"
+  - yaml: "**/.pre-commit-config.yaml"
+  - yaml: "**/molecule.yml"
+
+skip_list: []
+
+warn_list: []
+
+offline: false
+profile: production
+strict: false
+verbosity: 0

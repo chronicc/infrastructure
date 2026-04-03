@@ -2,6 +2,20 @@
 - name: Provision Forgejo Runners
   hosts: forgejo_runners
   become: true
+
+  handlers:
+    - name: Reload systemd daemon
+      ansible.builtin.systemd:
+        daemon_reload: true
+      notify: forgejo_systemd_reload
+
+    - name: Restart Forgejo runner service
+      ansible.builtin.systemd:
+        name: forgejo-runner-{{ item.key }}
+        state: restarted
+      loop: "{{ forgejo_runner_connections | dict2items }}"
+      notify: forgejo_systemd_restart
+
   tasks:
     - name: Create ansible cache directory
       ansible.builtin.file:
@@ -14,6 +28,9 @@
       ansible.builtin.get_url:
         url: "{{ forgejo_runner_url }}"
         dest: "{{ ansible_cache_directory }}/forgejo-runner-{{ forgejo_runner_version }}"
+        mode: "0644"
+
+    # TODO: Use gpg/sha256sum to check the integrity of the downloaded binary
 
     - name: Install the Forgejo runner binary
       ansible.builtin.copy:
@@ -43,21 +60,18 @@
         src: forgejo-config.yml.j2
         dest: /home/{{ item.key }}/runner-config.yml
         mode: "0644"
-      register: forgejo_config_result
       loop: "{{ forgejo_runner_connections | dict2items }}"
+      notify: forgejo_systemd_restart
 
     - name: Create Forgejo runner service
       ansible.builtin.template:
         src: forgejo-runner.service.j2
         dest: /etc/systemd/system/forgejo-runner-{{ item.key }}.service
         mode: "0644"
-      register: forgejo_service_result
       loop: "{{ forgejo_runner_connections | dict2items }}"
-
-    - name: Reload systemd daemon
-      ansible.builtin.systemd:
-        daemon_reload: true
-      when: forgejo_service_result.changed
+      notify:
+        - forgejo_systemd_reload
+        - forgejo_systemd_restart
 
     - name: Register the Forgejo runner
       ansible.builtin.command:
@@ -73,19 +87,10 @@
       loop: "{{ forgejo_runner_connections | dict2items }}"
       become: true
       become_user: "{{ item.key }}"
-      register: forgejo_register_result
+      notify: forgejo_systemd_restart
 
     - name: Enable Forgejo runner service
       ansible.builtin.systemd:
         name: forgejo-runner-{{ item.key }}
         enabled: true
       loop: "{{ forgejo_runner_connections | dict2items }}"
-
-    - name: Restart Forgejo runner service
-      ansible.builtin.systemd:
-        name: forgejo-runner-{{ item.key }}
-        state: restarted
-      loop: "{{ forgejo_runner_connections | dict2items }}"
-      when: forgejo_config_result.changed
-            or forgejo_service_result.changed
-            or forgejo_register_result.changed
