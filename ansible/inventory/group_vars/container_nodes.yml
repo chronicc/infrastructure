@@ -1,10 +1,15 @@
 ---
 docker_daemon_options:
   data-root: /var/lib/docker
-  metrics-addr: 172.17.0.1:9090
   default-address-pools:
     - base: 172.17.0.0/16
       size: 24
+  default-network-opts:
+    bridge:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+      com.docker.network.driver.mtu: "1300"
+  metrics-addr: 172.17.0.1:9090
+  mtu: 1300
 
 packages_container_nodes:
   - { name: python3-jmespath, src: apt, state: present }
