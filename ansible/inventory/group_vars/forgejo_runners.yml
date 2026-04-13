@@ -4,7 +4,7 @@ forgejo_runner_additional_groups:
 forgejo_runner_connections:
   codeberg_general:
     name: "{{ ansible_hostname }}"
-    url: https://codeberg.org/
+    capacity: 4
     labels:
       - docker
       - internet
@@ -14,6 +14,7 @@ forgejo_runner_connections:
     url: https://codeberg.org/
   codeberg_altosteiti:
     name: "{{ ansible_hostname }}"
+    capacity: 4
     labels:
       - altosteiti
       - docker
