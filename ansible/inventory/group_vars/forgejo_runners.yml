@@ -3,22 +3,25 @@ forgejo_runner_additional_groups:
   - docker
 forgejo_runner_connections:
   codeberg_general:
-    token: "{{ lookup('env', 'FORGEJO_CODEBERG_GENERAL_TOKEN') }}"
+    name: "{{ ansible_hostname }}"
     url: https://codeberg.org/
     labels:
       - docker
       - internet
       - kurthos
       - privileged
-  codeberg_altosteiti:
-    token: "{{ lookup('env', 'FORGEJO_CODEBERG_ALTOSTEITI_TOKEN') }}"
+    token: "{{ lookup('env', 'FORGEJO_CODEBERG_GENERAL_TOKEN') }}"
     url: https://codeberg.org/
+  codeberg_altosteiti:
+    name: "{{ ansible_hostname }}"
     labels:
       - altosteiti
       - docker
       - internet
       - kurthos
       - privileged
+    token: "{{ lookup('env', 'FORGEJO_CODEBERG_ALTOSTEITI_TOKEN') }}"
+    url: https://codeberg.org/
 forgejo_runner_base_url: https://code.forgejo.org/forgejo/runner/releases/download
 forgejo_runner_version: 12.7.3
 

@@ -80,7 +80,7 @@
           --config /home/{{ item.key }}/runner-config.yml
           --instance {{ item.value.url }}
           --token {{ item.value.token }}
-          --name {{ hostvars[ansible_hostname].ansible_facts.fqdn }}
+          --name {{ item.value.name }}
           --no-interactive
         chdir: /home/{{ item.key }}
         creates: /home/{{ item.key }}/.runner
