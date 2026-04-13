@@ -7,14 +7,14 @@
     - name: Reload systemd daemon
       ansible.builtin.systemd:
         daemon_reload: true
-      notify: forgejo_systemd_reload
+      listen: forgejo_systemd_reload
 
     - name: Restart Forgejo runner service
       ansible.builtin.systemd:
         name: forgejo-runner-{{ item.key }}
         state: restarted
       loop: "{{ forgejo_runner_connections | dict2items }}"
-      notify: forgejo_systemd_restart
+      listen: forgejo_systemd_restart
 
   tasks:
     - name: Create ansible cache directory
