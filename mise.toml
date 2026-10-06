@@ -12,8 +12,9 @@ MINIKUBE_NODE_COUNT="3"
 MINIKUBE_PROFILE="infrastructure"
 
 [settings]
+env_shell_expand = false
 experimental = true
-python.uv_venv_auto = true
+python.uv_venv_auto = "create|source"
 
 [tools]
 "aqua:lycheeverse/lychee" = "latest"
