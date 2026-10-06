@@ -1,6 +1,6 @@
 [env]
 # Contact email for administration and law enforcement.
-ADMIN_EMAIL=""
+ADMIN_MAIL=""
 
 # DNS domain used by specific apps in the cluster.
 # Deprecated

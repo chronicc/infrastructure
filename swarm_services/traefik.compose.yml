@@ -31,7 +31,7 @@ services:
     command:
       --accesslog.fields.names.StartUTC=drop
       --api.dashboard=true
-      --certificatesresolvers.letsencrypt.acme.email=${ADMIN_EMAIL}
+      --certificatesresolvers.letsencrypt.acme.email=${ADMIN_MAIL}
       --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
       --certificatesresolvers.letsencrypt.acme.httpchallenge=true
       --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
