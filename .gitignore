@@ -2,6 +2,9 @@
 mise.local.toml
 mise.*.local.toml
 
+# Self-signed certificates
+.ssl
+
 # Python
 __pycache__/
 .pytest_cache/

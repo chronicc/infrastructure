@@ -2,7 +2,7 @@ Installation
 ============
 
 1. Connect all nodes via nebula vpn.
-2. Create a docker swarm cluster on the vpn subnet.
+2. [Create a docker swarm cluster](./docker-swarm.md) on the VPN subnet.
 3. Add the proxy label to the lighthouse node. This will host the proxy container.
     ```bash
     docker node update --label-add proxy=true $NODE
