@@ -1,0 +1,78 @@
+---
+services:
+  app:
+    image: blinkospace/blinko:latest
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.environment == production
+          # Disabled for the moment due to reduced infrastructure
+          # - node.role != manager
+          # - node.labels.sphere == public
+      replicas: 1
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.blinko.entrypoints: "websecure"
+        # traefik.http.routers.blinko.middlewares: "sts-headers,auth-apps"
+        traefik.http.routers.blinko.middlewares: "sts-headers"
+        traefik.http.routers.blinko.rule: "Host(`notes.${APPS_DOMAIN}`)"
+        traefik.http.routers.blinko.tls: "true"
+        # traefik.http.routers.blinko.tls.certresolver: "letsencrypt"
+        traefik.http.services.blinko.loadbalancer.server.port: "1111"
+        traefik.swarm.network: "proxy"
+    environment:
+      - NODE_ENV=production
+      - NEXTAUTH_URL=https://notes.${APPS_DOMAIN}
+      # IMPORTANT: If you want to use sso, you must set NEXTAUTH_URL to your own domain
+      # - NEXT_PUBLIC_BASE_URL=http://localhost:1111
+      - NEXTAUTH_SECRET=${BLINKO_NEXTAUTH_SECRET}
+      - DATABASE_URL=postgresql://blinko:${BLINKO_POSTGRES_PASSWORD}@database/blinko
+    volumes:
+      - app:/app/.blinko
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:1111/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - default
+      - proxy
+
+  database:
+    image: postgres:14
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.environment == production
+          # Disabled for the moment due to reduced infrastructure
+          # - node.role != manager
+          # - node.labels.sphere == public
+      replicas: 1
+    environment:
+      - POSTGRES_DB=blinko
+      - POSTGRES_USER=blinko
+      - POSTGRES_PASSWORD=${BLINKO_POSTGRES_PASSWORD}
+      - TZ=Europe/Berlin
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        ["CMD", "pg_isready", "-U", "blinko"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    networks:
+      - default
+
+networks:
+  default:
+    internal: true
+  proxy:
+    external: true
+
+volumes:
+  app:
+  database:

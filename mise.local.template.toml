@@ -81,6 +81,16 @@ FORGEJO_CODEBERG_ALTOSTEITI_TOKEN=""
 ## Swarm Apps
 #########################################################################################
 
+## Blinko
+
+# Secret key used by the Blinko app for NextAuth.
+# Use `pwgen 64` to generate a new key.
+BLINKO_NEXTAUTH_SECRET=""
+
+# Postgres password used by the Blinko app.
+# Use `pwgen 24` to generate a new password.
+BLINKO_POSTGRES_PASSWORD=""
+
 ## Donetick
 
 # Secret key used for signing JWT tokens in Donetick.
