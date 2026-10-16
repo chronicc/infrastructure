@@ -28,7 +28,7 @@ services:
       mode: replicated
       placement:
         constraints:
-          - node.labels.environment==production
+          - node.labels.environment == production
           # Disabled for the moment due to reduced infrastructure
           # - node.role != manager
           # - node.labels.sphere == public

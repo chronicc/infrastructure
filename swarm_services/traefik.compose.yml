@@ -26,10 +26,6 @@ services:
       --accesslog.fields.names.StartUTC=drop
       --accesslog=true
       --api.dashboard=true
-      # --certificatesresolvers.letsencrypt.acme.email=${ADMIN_MAIL}
-      # --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
-      # --certificatesresolvers.letsencrypt.acme.httpchallenge=true
-      # --certificatesresolvers.letsencrypt.acme.storage=/ssl/acme.json
       --entrypoints.ts-dns.address=:41144/tcp
       --entrypoints.ts-dns.http.aliasHeadersStrategy=delete
       --entrypoints.ts-filetransfer.address=:30033/tcp
@@ -56,6 +52,10 @@ services:
       --providers.swarm.exposedbydefault=false
       --providers.swarm.network=proxy
       --providers.swarm.watch=true
+      # --certificatesresolvers.letsencrypt.acme.email=${ADMIN_MAIL}
+      # --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      # --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      # --certificatesresolvers.letsencrypt.acme.storage=/ssl/acme.json
     ports:
       - mode: host
         published: 80
